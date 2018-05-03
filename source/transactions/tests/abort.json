@@ -245,7 +245,7 @@
             "session": "session0"
           },
           "result": {
-            "errorContains": "no transaction started"
+            "errorContains": "cannot call abortTransaction twice"
           }
         }
       ],
@@ -349,7 +349,7 @@
             "session": "session0"
           },
           "result": {
-            "errorContains": "no transaction started"
+            "errorContains": "Cannot call commitTransaction after calling abortTransaction"
           }
         }
       ],

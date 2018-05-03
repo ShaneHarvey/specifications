@@ -95,7 +95,7 @@ tests:
           - _id: 1
           - _id: 2
 
-  - description: two commits in a row
+  - description: multiple commits in a row
 
     operations:
       - name: startTransaction
@@ -114,9 +114,9 @@ tests:
       - name: commitTransaction
         arguments:
           session: session0
-        result:
-          # Client-side error.
-          errorContains: no transaction started
+      - name: commitTransaction
+        arguments:
+          session: session0
 
     expectations:
       - command_started_event:
@@ -134,6 +134,28 @@ tests:
             writeConcern:
           command_name: insert
           database_name: *database_name
+      - command_started_event:
+          command:
+            commitTransaction: 1
+            lsid: session0
+            txnNumber:
+              $numberLong: "1"
+            startTransaction:
+            autocommit: false
+            writeConcern:
+          command_name: commitTransaction
+          database_name: admin
+      - command_started_event:
+          command:
+            commitTransaction: 1
+            lsid: session0
+            txnNumber:
+              $numberLong: "1"
+            startTransaction:
+            autocommit: false
+            writeConcern:
+          command_name: commitTransaction
+          database_name: admin
       - command_started_event:
           command:
             commitTransaction: 1
@@ -185,3 +207,18 @@ tests:
       collection:
         data:
           - _id: 1
+
+  - description: commit without start
+
+    operations:
+      - name: commitTransaction
+        arguments:
+          session: session0
+        result:
+          errorContains: no transaction started
+
+    expectations: []
+
+    outcome:
+      collection:
+        data: []

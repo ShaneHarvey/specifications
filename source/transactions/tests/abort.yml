@@ -161,7 +161,7 @@ tests:
         arguments:
           session: session0
         result:
-          errorContains: no transaction started
+          errorContains: cannot call abortTransaction twice
 
     expectations:
       - command_started_event:
@@ -230,7 +230,7 @@ tests:
         arguments:
           session: session0
         result:
-          errorContains: no transaction started
+          errorContains: Cannot call commitTransaction after calling abortTransaction
 
     expectations:
       - command_started_event:
