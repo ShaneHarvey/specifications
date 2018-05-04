@@ -338,6 +338,9 @@ tests:
       - name: commitTransaction
         arguments:
           session: session0
+      - name: commitTransaction
+        arguments:
+          session: session0
       - name: insertOne
         arguments:
           document:
@@ -348,7 +351,60 @@ tests:
       - name: commitTransaction
         arguments:
           session: session0
-      # Commit again with no active transaction.
+
+    expectations:
+      - command_started_event:
+          command:
+            insert: test
+            documents:
+              - _id: 1
+            ordered: true
+            readConcern:
+            lsid: session0
+            txnNumber:
+              $numberLong: "3"
+            startTransaction: true
+            autocommit: false
+            writeConcern:
+          command_name: insert
+          database_name: transaction-tests
+      - command_started_event:
+          command:
+            commitTransaction: 1
+            lsid: session0
+            txnNumber:
+              $numberLong: "3"
+            startTransaction:
+            autocommit: false
+            writeConcern:
+          command_name: commitTransaction
+          database_name: admin
+
+    outcome:
+      collection:
+        data:
+          - _id: 1
+
+  - description: multiple commits in a row
+
+    sessionOptions:
+      session0:
+        autoStartTransaction: true
+
+    operations:
+      - name: insertOne
+        arguments:
+          document:
+            _id: 1
+          session: session0
+        result:
+          insertedId: 1
+      - name: commitTransaction
+        arguments:
+          session: session0
+      - name: commitTransaction
+        arguments:
+          session: session0
       - name: commitTransaction
         arguments:
           session: session0
@@ -363,7 +419,7 @@ tests:
             readConcern:
             lsid: session0
             txnNumber:
-              $numberLong: "2"
+              $numberLong: "1"
             startTransaction: true
             autocommit: false
             writeConcern:
@@ -374,7 +430,29 @@ tests:
             commitTransaction: 1
             lsid: session0
             txnNumber:
-              $numberLong: "2"
+              $numberLong: "1"
+            startTransaction:
+            autocommit: false
+            writeConcern:
+          command_name: commitTransaction
+          database_name: admin
+      - command_started_event:
+          command:
+            commitTransaction: 1
+            lsid: session0
+            txnNumber:
+              $numberLong: "1"
+            startTransaction:
+            autocommit: false
+            writeConcern:
+          command_name: commitTransaction
+          database_name: admin
+      - command_started_event:
+          command:
+            commitTransaction: 1
+            lsid: session0
+            txnNumber:
+              $numberLong: "1"
             startTransaction:
             autocommit: false
             writeConcern:
