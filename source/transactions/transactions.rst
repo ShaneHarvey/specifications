@@ -746,7 +746,7 @@ client receives no server reply, the client adds the label.
 Retrying transactions that fail with TransientTransactionError
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If an exception with the TransientTransactionError label is thrown, an
+If an exception with the "TransientTransactionError" label is thrown, an
 application can retry the entire transaction from the beginning with a
 reasonable expectation that it will succeed. For example:
 
@@ -786,7 +786,7 @@ retry attempt of a commitTransaction may again fail with a retryable
 error. In that case, both the driver and the application do not know the
 state of the transaction.
 
-The driver MUST add the UnknownTransactionCommitResult error label when
+The driver MUST add the "UnknownTransactionCommitResult" error label when
 commitTransaction fails with a network error, server selection error, or
 write concern failed / timeout. (See
 `A server selection error is labeled UnknownTransactionCommitResult`_
@@ -806,7 +806,7 @@ Retrying commitTransaction
 If an exception with this label is thrown, an application can safely
 call commitTransaction again. If this attempt succeeds it means the
 transaction has committed with the provided write concern. If this
-attempt fails it may also have the UnknownTransactionCommitResult error
+attempt fails it may also have the "UnknownTransactionCommitResult" error
 label. For example:
 
 .. code:: python
@@ -894,16 +894,16 @@ network error and enters the exception handling block, where
 abortTransaction throws "Cannot call abortTransaction after
 commitTransaction".
 
-Drivers add the TransientTransactionError label to network errors
+Drivers add the "TransientTransactionError" label to network errors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When any non-commitTransaction command fails with a network error within
-a transaction Drivers add the TransientTransactionError label because
+a transaction Drivers add the "TransientTransactionError" label because
 the client doesn't know if it has modified data in the transaction or
 not. Therefore it must abort and retry the entire transaction to be
 certain it has executed each command in the transaction exactly once.
 
-Adding the TransientTransactionError label allows applications to use
+Adding the "TransientTransactionError" label allows applications to use
 the the same error label API for both network errors and command errors.
 This also allows applications to distinguish between a network error
 that occurs within a transaction from a network error that occurs while
@@ -1117,11 +1117,11 @@ commands.
 A server selection error is labeled UnknownTransactionCommitResult
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Drivers add the UnknownTransactionCommitResult to a server selection
+Drivers add the "UnknownTransactionCommitResult" to a server selection
 error from commitTransaction, even if this is the first attempt to send
 commitTransaction. It is true in this case that the driver knows the
 result: the transaction is definitely not committed. However, the
-UnknownTransactionCommitResult label properly communicates to the
+"UnknownTransactionCommitResult" label properly communicates to the
 application that calling commitTransaction again may succeed.
 
 FAQ
