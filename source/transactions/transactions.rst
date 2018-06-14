@@ -318,8 +318,7 @@ transaction", "transaction in progress", "transaction committed", and
 the following diagram:
 
 | |states|
-| (`GraphViz
-  source <https://gist.github.com/ShaneHarvey/635386b681ebf85abebc5b69b24f47f2>`__)
+| (`GraphViz source <client-session-transaction-states.dot>`__)
 
 .. |states| image:: client-session-transaction-states.png
    :width: 6.5in
