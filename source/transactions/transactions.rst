@@ -33,8 +33,8 @@ Driver Transactions Specification
 **META**
 --------
 
-The keywords “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”,
-“SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in \`RFC 2119
 <https://www.ietf.org/rfc/rfc2119.txt>`_.
 
@@ -98,18 +98,18 @@ Error Label
 ^^^^^^^^^^^
 
 Starting in MongoDB 4.0, any command error may include a top level
-“errorLabels” field. The field contains an array of string error labels.
+"errorLabels" field. The field contains an array of string error labels.
 Drivers may also add error labels to errors that they return.
 
 Transient Transaction Error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Any command error that includes the “TransientTransactionError” error
-label in the “errorLabels” field. Any network error encountered running
+Any command error that includes the "TransientTransactionError" error
+label in the "errorLabels" field. Any network error encountered running
 any command other than commitTransaction in a transaction. If a network
 error occurs while running the commitTransaction command then it is not
 known whether the transaction committed or not, and thus the
-“TransientTransactionError” label MUST NOT be added.
+"TransientTransactionError" label MUST NOT be added.
 
 **Naming variations**
 ~~~~~~~~~~~~~~~~~~~~~
@@ -262,8 +262,8 @@ writeConcern
 Drivers MUST raise an error if the user provides or if defaults would
 result in an unacknowledged writeConcern. The Driver Sessions spec
 disallows using unacknowledged writes in a session. The error message
-MUST contain “transactions do not support unacknowledged write
-concerns”.
+MUST contain "transactions do not support unacknowledged write
+concerns".
 
 readPreference
 ^^^^^^^^^^^^^^
@@ -282,8 +282,8 @@ configurable read preferences.
 
 In MongoDB 4.0, transactions may only read from the primary. If a read
 is attempted and the transaction’s read preference is not Primary
-drivers MUST raise an error containing the string “read preference in a
-transaction must be primary”. Drivers MUST NOT validate the read
+drivers MUST raise an error containing the string "read preference in a
+transaction must be primary". Drivers MUST NOT validate the read
 preference during write operations or in startTransaction. See `Why is
 readPreference part of
 TransactionOptions? <#why-is-readpreference-part-of-transactionoptions>`__
@@ -295,7 +295,7 @@ TransactionOptions? <#why-is-readpreference-part-of-transactionoptions>`__
     with client.start_session() as s:
         with s.start_transaction():
             coll.insert_one({}, session=s)
-            coll.find_one(session=s)  # Error: “read preference in a transaction must be primary”
+            coll.find_one(session=s)  # Error: "read preference in a transaction must be primary"
 
 In the future, we might relax this restriction and allow any read
 preference on a transaction.
@@ -312,9 +312,9 @@ session.
 **ClientSession changes**
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ClientSession is in one of five states: "no transaction", “starting
-transaction”, "transaction in progress", "transaction committed", and
-“transaction aborted”. It transitions among these states according to
+ClientSession is in one of five states: "no transaction", "starting
+transaction", "transaction in progress", "transaction committed", and
+"transaction aborted". It transitions among these states according to
 the following diagram:
 
 | |image0|
@@ -323,15 +323,15 @@ the following diagram:
   `GraphViz
   source <https://gist.github.com/ShaneHarvey/635386b681ebf85abebc5b69b24f47f2>`__)
 
-When a ClientSession is created it starts in the “no transaction” state.
+When a ClientSession is created it starts in the "no transaction" state.
 Starting, committing, and aborting a transaction transitions the session
-between the “starting transaction”, "transaction in progress",
-"transaction committed", and “transaction aborted” states. If the
+between the "starting transaction", "transaction in progress",
+"transaction committed", and "transaction aborted" states. If the
 session is in the "transaction aborted" or "transaction committed"
 state, then any operation using the session (besides commitTransaction
 and abortTransaction) MUST reset the session state to "no transaction".
 
-Note that “error” is not a state, it represents throwing an error due to
+Note that "error" is not a state, it represents throwing an error due to
 an invalid operation. When such errors are thrown the session state is
 unchanged.
 
@@ -345,9 +345,9 @@ ClientSession.options or inherit them from the session's client, as
 described in the text above for each option. This session is in the
 "starting transaction" state after this method returns.
 
-If this session is in the “starting transaction ” or “transaction in
-progress” state, then Drivers MUST raise an error containing the message
-“Transaction already in progress” without modifying any session state.
+If this session is in the "starting transaction " or "transaction in
+progress" state, then Drivers MUST raise an error containing the message
+"Transaction already in progress" without modifying any session state.
 
 startTransaction SHOULD report an error if the driver can detect that
 transactions are not supported by the deployment. A deployment does not
@@ -386,8 +386,8 @@ containing scope has exited normally or for an exception, object
 destruction MUST NOT automatically commit the transaction.
 
 If the driver returns a type to support resource management blocks, the
-type MUST NOT be named “Transaction”. The type MAY be named
-“TransactionContext”, “TransactionScopeGuard” or something similar for
+type MUST NOT be named "Transaction". The type MAY be named
+"TransactionContext", "TransactionScopeGuard" or something similar for
 your language. See `Why is there no Transaction
 object? <#why-is-there-no-transaction-object>`__
 
@@ -401,19 +401,19 @@ or the command succeeds but contains a writeConcernError. This session
 is in the "transaction committed" state after this method returns — even
 on error.
 
-If this session is in the “no transaction” state, then Drivers MUST
-raise an error containing the message “No transaction started”.
+If this session is in the "no transaction" state, then Drivers MUST
+raise an error containing the message "No transaction started".
 
-If this session is in the “transaction aborted” state, then Drivers MUST
-raise an error containing the message “Cannot call commitTransaction
-after calling abortTransaction”.
+If this session is in the "transaction aborted" state, then Drivers MUST
+raise an error containing the message "Cannot call commitTransaction
+after calling abortTransaction".
 
-If this session is already in the “transaction committed” state, then
+If this session is already in the "transaction committed" state, then
 Drivers MUST re-run the previous commitTransaction.
 
 It is valid to call commitTransaction when the session is in the
-“starting transaction” or “transaction in progress” state. When the
-session is in the “starting transaction” state, meaning no operations
+"starting transaction" or "transaction in progress" state. When the
+session is in the "starting transaction" state, meaning no operations
 have been performed on this transaction, drivers MUST NOT run the
 commitTransaction command.
 
@@ -432,26 +432,26 @@ abortTransaction
 This method aborts the currently active transaction on this session.
 Drivers MUST run an abortTransaction command with the transaction’s
 writeConcern. When this method completes the session moves to the
-“transaction aborted” state.
+"transaction aborted" state.
 
 It is only valid to call abortTransaction when the session is in the
-“starting transaction” or “transaction in progress” state, otherwise
+"starting transaction" or "transaction in progress" state, otherwise
 drivers MUST raise an error without modifying transaction state.
 
-If this session is in the “no transaction” state, then drivers MUST
-raise an error containing the message “No transaction started”.
+If this session is in the "no transaction" state, then drivers MUST
+raise an error containing the message "No transaction started".
 
-If this session is in the “transaction committed” state, then drivers
-MUST raise an error containing the message “Cannot call abortTransaction
-after calling commitTransaction”.
+If this session is in the "transaction committed" state, then drivers
+MUST raise an error containing the message "Cannot call abortTransaction
+after calling commitTransaction".
 
-If this session is already in the “transaction aborted” state, then
-drivers MUST raise an error containing the message “Cannot call
-abortTransaction twice”.
+If this session is already in the "transaction aborted" state, then
+drivers MUST raise an error containing the message "Cannot call
+abortTransaction twice".
 
 It is valid to call abortTransaction when the session is in the
-“starting transaction” or “transaction in progress” state. When the
-session is in the “starting transaction” state, meaning, no operations
+"starting transaction" or "transaction in progress" state. When the
+session is in the "starting transaction" state, meaning, no operations
 have been performed on this transaction, drivers MUST NOT run the
 abortTransaction command.
 
@@ -473,7 +473,7 @@ endSession changes
 ^^^^^^^^^^^^^^^^^^
 
 This method ends a ClientSession. Drivers MUST call abortTransaction if
-this session is in the “transaction in progress” state in order to
+this session is in the "transaction in progress" state in order to
 release resources on the server. Drivers MUST ignore any errors raised
 by abortTransaction while ending a session.
 
@@ -551,7 +551,7 @@ Behavior of the readConcern field
 Any command that marks the beginning of a transaction MAY include a
 readConcern argument with an optional level and afterClusterTime fields.
 Read concern level 'local', 'majority', and 'snapshot' are all
-supported, although they will all have the same behavior as ‘snapshot’
+supported, although they will all have the same behavior as "snapshot"
 in MongoDB 4.0. To support causal consistency, if readConcern
 afterClusterTime is specified, then the server will ensure that the
 transaction’s read timestamp is after the afterClusterTime.
@@ -562,9 +562,9 @@ is only needed to establish the transaction’s read timestamp. If a
 readConcern argument is specified on a subsequent (non-initial) command,
 the server will return an error.
 
-Read concern level ‘snapshot’ is new in MongoDB 4.0 and can only be used
+Read concern level "snapshot" is new in MongoDB 4.0 and can only be used
 when starting a transaction. The server will return an error if read
-concern level ‘snapshot’ is specified on a command that is not the start
+concern level "snapshot" is specified on a command that is not the start
 of a transaction. Drivers MUST rely on the server to report an error if
 read concern level snapshot is used incorrectly.
 
@@ -589,22 +589,22 @@ transaction:
 .. code:: typescript
 
     {
-        insert : “test”,
+        insert : "test",
         documents : [{}],
         lsid : { id : <UUID> }
         txnNumber: NumberLong(1),
-        // The ‘level’ is optional, supported values are “local”, “majority”
-        // and “snapshot”. ‘afterClusterTime’ is only present in causally
+        // The "level" is optional, supported values are "local", "majority"
+        // and "snapshot". "afterClusterTime" is only present in causally
         // consistent sessions.
         readConcern : {
-            level : “snapshot”,
+            level : "snapshot",
             afterClusterTime : Timestamp(42,1)
         },
         startTransaction : true,
         autocommit : false
     }
 
-The session transitions to the “transaction in progress” state after
+The session transitions to the "transaction in progress" state after
 completing the first command within a transaction — even on error.
 
 Constructing any other command within a transaction
@@ -730,13 +730,13 @@ Error Labels
 ~~~~~~~~~~~~
 
 Starting in MongoDB 4.0, any command error may include a top level
-“errorLabels” field. The field contains an array of string error labels.
+"errorLabels" field. The field contains an array of string error labels.
 
 TransientTransactionError
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Any command error that includes the “TransientTransactionError” error
-label in the “errorLabels” field. Any network error or server selection
+Any command error that includes the "TransientTransactionError" error
+label in the "errorLabels" field. Any network error or server selection
 error encountered running any command besides commitTransaction in a
 transaction. In the case of command errors, the server adds the label;
 in the case of network errors or server selection errors where the
@@ -793,7 +793,7 @@ UnknownTransactionCommitResult <#a-server-selection-error-is-labeled-unknowntran
 for justification.) The approximate meaning of the
 UnknownTransactionCommitResult label is, "We don't know if your commit
 has satisfied the provided write concern." The only write concern errors
-that are not labeled with “UnknownTransactionCommitResult” are
+that are not labeled with "UnknownTransactionCommitResult" are
 CannotSatisfyWriteConcern (which will be renamed to the more precise
 UnsatisfiableWriteConcern in 4.2, while preserving the current error
 code) and UnknownReplWriteConcern. These errors codes mean that the
