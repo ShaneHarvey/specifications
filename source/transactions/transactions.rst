@@ -362,7 +362,7 @@ using MMAPv1 will report maxWireVersion 7 but does not support
 transactions. In this case, Drivers rely on the deployment to report an
 error when a transaction is started.
 
-Drivers MUST increment the txnNumber for the corresponding server
+Drivers MUST increment the ``txnNumber`` for the corresponding server
 session.
 
 In programming languages that support resource management blocks,
@@ -512,11 +512,11 @@ Transactions Wire Protocol
 --------------------------
 
 The server requires each operation executed within a transaction to
-provide an lsid and txnNumber in its command document. Each field is
+provide an ``lsid`` and ``txnNumber`` in its command document. Each field is
 obtained from the ClientSession object passed to the operation from the
 application. Drivers will be responsible for maintaining a monotonically
 increasing transaction number for each ServerSession used by a
-ClientSession object. The txnNumber is incremented by the call to
+ClientSession object. The ``txnNumber`` is incremented by the call to
 startTransaction and remains the same for all commands in the
 transaction.
 
@@ -535,31 +535,31 @@ Behavior of the startTransaction field
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The first command within a multi-statement transaction MUST include
-startTransaction:true. Subsequent commands MUST NOT include the
-startTransaction field.
+``startTransaction:true``. Subsequent commands MUST NOT include the
+``startTransaction`` field.
 
 Behavior of the autocommit field
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All operations within a multi-statement transaction (including
-commitTransaction and abortTransaction) MUST include autocommit:false,
+commitTransaction and abortTransaction) MUST include ``autocommit:false``,
 to distinguish them from single-statement retryable writes.
 
 Behavior of the readConcern field
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Any command that marks the beginning of a transaction MAY include a
-readConcern argument with an optional level and afterClusterTime fields.
-Read concern level 'local', 'majority', and 'snapshot' are all
+``readConcern`` argument with an optional ``level`` and ``afterClusterTime``
+fields. Read concern level 'local', 'majority', and 'snapshot' are all
 supported, although they will all have the same behavior as "snapshot"
-in MongoDB 4.0. To support causal consistency, if readConcern
-afterClusterTime is specified, then the server will ensure that the
-transaction’s read timestamp is after the afterClusterTime.
+in MongoDB 4.0. To support causal consistency, if ``readConcern``
+``afterClusterTime`` is specified, then the server will ensure that the
+transaction’s read timestamp is after the ``afterClusterTime``.
 
 All commands of a multi-statement transaction subsequent to the initial
-command MUST NOT specify a readConcern, since the readConcern argument
+command MUST NOT specify a ``readConcern``, since the ``readConcern`` argument
 is only needed to establish the transaction’s read timestamp. If a
-readConcern argument is specified on a subsequent (non-initial) command,
+``readConcern`` argument is specified on a subsequent (non-initial) command,
 the server will return an error.
 
 Read concern level "snapshot" is new in MongoDB 4.0 and can only be used
@@ -572,19 +572,19 @@ Behavior of the writeConcern field
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The commitTransaction and abortTransaction commands are the only
-commands of a multi-statement transaction that allow a writeConcern
-argument. If a writeConcern argument is given on any other command of a
-transaction, the server will return an error. The writeConcern argument
-of the commitTransaction and abortTransaction commands will have
+commands of a multi-statement transaction that allow a ``writeConcern``
+argument. If a ``writeConcern`` argument is given on any other command of a
+transaction, the server will return an error. The ``writeConcern`` argument
+of the commitTransaction and abortTransaction commands has
 semantics analogous to existing write commands.
 
 Constructing the first command within a transaction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When constructing the first command within a transaction, drivers MUST
-add the lsid, txnNumber, readConcern, startTransaction and autocommit
-fields. This is an example of an insert command that begins a server
-transaction:
+add the ``lsid``, ``txnNumber``, ``readConcern``, ``startTransaction`` and
+``autocommit`` fields. This is an example of an insert command that
+begins a server transaction:
 
 .. code:: typescript
 
@@ -611,9 +611,10 @@ Constructing any other command within a transaction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When constructing any other command within a transaction, drivers MUST
-add the lsid, txnNumber, and autocommit fields. Drivers MUST NOT
-automatically add the writeConcern, readConcern, or startTransaction
-fields. This is an example of a find command within a transaction:
+add the ``lsid``, ``txnNumber``, and ``autocommit`` fields. Drivers MUST NOT
+automatically add the ``writeConcern``, ``readConcern``, or
+``startTransaction`` fields. This is an example of a find command
+within a transaction:
 
 .. code:: typescript
 
@@ -629,9 +630,9 @@ Generic RunCommand helper within a transaction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If your driver offers a generic RunCommand method on your database
-object, the driver MUST add the lsid, autocommit, and txnNumber fields.
+object, the driver MUST add the ``lsid``, ``autocommit``, and ``txnNumber`` fields.
 If the RunCommand operation is the first operation in a transaction then
-the driver MUST also add the startTransaction and readConcern fields. A
+the driver MUST also add the ``startTransaction`` and ``readConcern`` fields. A
 driver MUST do this without modifying any data supplied by the
 application (e.g. the command document passed to RunCommand). The
 RunCommand method is considered a read operation and MUST use the
@@ -643,9 +644,9 @@ already contains some of the transaction fields.
 **Interaction with Causal Consistency**
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Drivers MUST add readConcern.afterClusterTime to the command that starts
+Drivers MUST add ``readConcern.afterClusterTime`` to the command that starts
 a transaction in a causally consistent session -- even if the command is
-a write. Drivers MUST NOT add readConcern.afterClusterTime to subsequent
+a write. Drivers MUST NOT add ``readConcern.afterClusterTime`` to subsequent
 commands in a transaction.
 
 **Interaction with Retryable Writes**
@@ -660,13 +661,13 @@ has been disabled on the MongoClient. commitTransaction and
 abortTransaction are retryable write commands and MUST be retried
 according to the Retryable Writes Specification.
 
-Retryable writes and transactions both use the txnNumber associated with
-a ServerSession. For retryable writes, txnNumber would normally
+Retryable writes and transactions both use the ``txnNumber`` associated with
+a ServerSession. For retryable writes, ``txnNumber`` would normally
 increment before each retryable command, whereas in a transaction, the
-txnNumber is incremented at the start and then stays constant, even for
+``txnNumber`` is incremented at the start and then stays constant, even for
 retryable operations within the transaction. When executing the
 commitTransaction and abortTransaction commands within a transaction
-drivers MUST use the same txnNumber used for all preceding commands in
+drivers MUST use the same ``txnNumber`` used for all preceding commands in
 the transaction.
 
 **Server Commands**
@@ -683,7 +684,7 @@ The commitTransaction server command has the following format:
         commitTransaction : 1,
         lsid : { id : <UUID> },
         txnNumber : <Int64>,
-        autocommmit : false,
+        autocommit : false,
         writeConcern : {...}
     }
 
@@ -698,7 +699,7 @@ The abortTransaction server command has the following format:
         abortTransaction : 1,
         lsid : { id : <UUID> },
         txnNumber : <Int64>,
-        autocommmit : false,
+        autocommit : false,
         writeConcern : {...}
     }
 
@@ -937,8 +938,8 @@ Causal Consistency with RunCommand helper
 Causal Consistency alone only applies to commands that read, and we
 don't want to parse the document passed to runCommand to see if it's a
 command that reads. In a transaction, however, any command at all that
-starts a transaction must include afterClusterTime, so we can add
-afterClusterTime to the document passed to runCommand without adding
+starts a transaction must include ``afterClusterTime``, so we can add
+``afterClusterTime`` to the document passed to runCommand without adding
 per-command special logic to runCommand.
 
 Calling commitTransaction with the generic runCommand helper is undefined behavior
