@@ -317,11 +317,14 @@ transaction", "transaction in progress", "transaction committed", and
 "transaction aborted". It transitions among these states according to
 the following diagram:
 
-| |image0|
-| (`View
-  larger <https://drive.google.com/file/d/1DWLUWtfv7qUozRamZq-jMphxX3jFM-cu/view?usp=sharing>`__,
-  `GraphViz
+| |states|
+| (`GraphViz
   source <https://gist.github.com/ShaneHarvey/635386b681ebf85abebc5b69b24f47f2>`__)
+
+.. |states| image:: client-session-transaction-states.png
+   :width: 6.5in
+   :height: 3.68056in
+
 
 When a ClientSession is created it starts in the "no transaction" state.
 Starting, committing, and aborting a transaction transitions the session
@@ -1176,7 +1179,3 @@ Applications should not run such commands inside a transaction.
 -------------
 
 :2018-06-07: The count command is not supported within transactions.
-
-.. |image0| image:: client-session-transaction-states.png
-   :width: 6.5in
-   :height: 3.68056in
