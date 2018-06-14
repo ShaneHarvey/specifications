@@ -126,72 +126,78 @@ StartTransaction or start_transaction instead of startTransaction.
 Transactions are built on top of Driver Session API. Applications can
 run a transaction like this:
 
-| with client.start_session() as s:
-| s.start_transaction()
-| collection_one.insert_one(doc_one, session=s)
-| collection_two.insert_one(doc_two, session=s)
-| s.commit_transaction()
+.. code:: python
+
+    with client.start_session() as s:
+        s.start_transaction()
+        collection_one.insert_one(doc_one, session=s)
+        collection_two.insert_one(doc_two, session=s)
+        s.commit_transaction()
 
 This section is an overview of the public API for transactions:
 
-| class TransactionOptions {
-| /*\*
-| \* The readConcern to use for this transaction.
-| \*/
-| Optional<ReadConcern> readConcern;
+.. code:: typescript
 
-| /*\*
-| \* The writeConcern to use for this transaction.
-| \*/
-| Optional<WriteConcern> writeConcern;
+    class TransactionOptions {
+        /**
+         * The readConcern to use for this transaction.
+         */
+        Optional<ReadConcern> readConcern;
 
-| /*\*
-| \* The readPreference to use for this transaction.
-| \*/
-| Optional<ReadPreference> readPreference;
-| }
-| class SessionOptions {
-| /*\*
-| \* The default TransactionOptions to use for transactions started
-| \* on this session.
-| \*/
-| Optional<TransactionOptions> defaultTransactionOptions;
-| // Options defined in other specifications...
-| }
-| interface ClientSession {
-| /*\*
-| \* Starts a new transaction with the given options. This session's
-| \* defaultTransactionOptions is used when options is omitted.
-| \* Raises an error if this session is already in a transaction.
+        /**
+         * The writeConcern to use for this transaction.
+         */
+        Optional<WriteConcern> writeConcern;
 
-\*
+        /**
+         * The readPreference to use for this transaction.
+         */
+        Optional<ReadPreference> readPreference;
+    }
 
-\* The return type MAY be non-void if necessary to participate in
+    class SessionOptions {
+        /**
+         * The default TransactionOptions to use for transactions started
+         * on this session.
+         */
+        Optional<TransactionOptions> defaultTransactionOptions;
 
-\* the programming language's resource management block idiom. The
+        // Options defined in other specifications...
+    }
 
-\* type of the returned object, if any, MUST NOT be named
+    interface ClientSession {
+        /**
+         * Starts a new transaction with the given options. This session's
+         * defaultTransactionOptions is used when options is omitted.
+         * Raises an error if this session is already in a transaction.
+         *
+         * The return type MAY be non-void if necessary to participate in
+         * the programming language's resource management block idiom. The
+         * type of the returned object, if any, MUST NOT be named
+         * Transaction, see "Why is there no Transaction object?"
+         */
+        void startTransaction(Optional<TransactionOptions> options);
 
-| \* Transaction, see "Why is there no Transaction object?"
-| \*/
-| void startTransaction(Optional<TransactionOptions> options);
-| /*\*
-| \* Commits the currently active transaction in this session.
-| \* Raises an error if this session has no transaction.
-| \*/
-| void commitTransaction();
-| /*\*
-| \* Aborts the currently active transaction in this session.
-| \* Raises an error if this session has no transaction.
-| \*/
-| void abortTransaction();
-| /*\*
-| \* Aborts any currently active transaction and ends this session.
-| \* MUST NOT raise an error.
-| \*/
-| void endSession();
-| // Methods defined in other specifications...
-| }
+        /**
+         * Commits the currently active transaction in this session.
+         * Raises an error if this session has no transaction.
+         */
+        void commitTransaction();
+
+        /**
+         * Aborts the currently active transaction in this session.
+         * Raises an error if this session has no transaction.
+         */
+        void abortTransaction();
+
+        /**
+         * Aborts any currently active transaction and ends this session.
+         * MUST NOT raise an error.
+         */
+        void endSession();
+
+        // Methods defined in other specifications...
+    }
 
 Each new member is documented below.
 
@@ -282,14 +288,14 @@ preference during write operations or in startTransaction. See `Why is
 readPreference part of
 TransactionOptions? <#why-is-readpreference-part-of-transactionoptions>`__
 
-client = MongoClient("mongodb://host/?readPreference=nearest")
+.. code:: python
 
-| coll = client.db.test
-| with client.start_session() as s:
-| with s.start_transaction():
-| coll.insert_one({}, session=s)
-| coll.find_one(session=s) # Error: “read preference in a transaction
-  must be primary”
+    client = MongoClient("mongodb://host/?readPreference=nearest")
+    coll = client.db.test
+    with client.start_session() as s:
+        with s.start_transaction():
+            coll.insert_one({}, session=s)
+            coll.find_one(session=s)  # Error: “read preference in a transaction must be primary”
 
 In the future, we might relax this restriction and allow any read
 preference on a transaction.
@@ -361,13 +367,12 @@ session.
 In programming languages that support resource management blocks,
 startTransaction MAY be used to initiate such a block:
 
-with client.start_session() as s:
+.. code:: python
 
-with s.start_transaction():
-
-collection_one.insert_one(doc1, session=s)
-
-s.commit_transaction()
+    with client.start_session() as s:
+        with s.start_transaction():
+            collection_one.insert_one(doc1, session=s)
+            s.commit_transaction()
 
 The exact API SHOULD match the idioms of the programming language.
 Depending on the conventions of the programming language, exiting the
@@ -489,11 +494,13 @@ label strings that are known at this time.
 
 Drivers MAY implement an error label API similar to the following:
 
-| try:
-| session.commit_transaction()
-| except (OperationFailure, ConnectionFailure) as exc:
-| if exc.has_error_label("UnknownTransactionCommitResult"):
-| print("tried to commit, don't know the outcome")
+.. code:: python
+
+    try:
+        session.commit_transaction()
+    except (OperationFailure, ConnectionFailure) as exc:
+        if exc.has_error_label("UnknownTransactionCommitResult"):
+            print("tried to commit, don't know the outcome")
 
 Drivers MAY expose the list of all error labels for an exception object.
 
@@ -579,32 +586,23 @@ add the lsid, txnNumber, readConcern, startTransaction and autocommit
 fields. This is an example of an insert command that begins a server
 transaction:
 
-{
+.. code:: typescript
 
-insert: “test”,
-
-documents: [{}],
-
-| lsid : { id : <UUID> }
-| txnNumber: NumberLong(1),
-
-// The ‘level’ is optional, supported values are “local”, “majority”
-
-// and “snapshot”. ‘afterClusterTime’ is only present in causally
-
-// consistent sessions.
-
-readConcern: {
-
-| level: “snapshot”,
-| afterClusterTime: Timestamp(42,1)
-| },
-
-startTransaction: true,
-
-autocommit: false
-
-}
+    {
+        insert : “test”,
+        documents : [{}],
+        lsid : { id : <UUID> }
+        txnNumber: NumberLong(1),
+        // The ‘level’ is optional, supported values are “local”, “majority”
+        // and “snapshot”. ‘afterClusterTime’ is only present in causally
+        // consistent sessions.
+        readConcern : {
+            level : “snapshot”,
+            afterClusterTime : Timestamp(42,1)
+        },
+        startTransaction : true,
+        autocommit : false
+    }
 
 The session transitions to the “transaction in progress” state after
 completing the first command within a transaction — even on error.
@@ -617,18 +615,15 @@ add the lsid, txnNumber, and autocommit fields. Drivers MUST NOT
 automatically add the writeConcern, readConcern, or startTransaction
 fields. This is an example of a find command within a transaction:
 
-{
+.. code:: typescript
 
-find: “test”,
-
-filter: {},
-
-| lsid : { id : <UUID> }
-| txnNumber: NumberLong(1),
-
-autocommit: false
-
-}
+    {
+        find : "test",
+        filter : {},
+        lsid : { id : <UUID> }
+        txnNumber : NumberLong(1),
+        autocommit : false
+    }
 
 Generic RunCommand helper within a transaction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -677,62 +672,56 @@ the transaction.
 **Server Commands**
 ~~~~~~~~~~~~~~~~~~~
 
-.. _committransaction-1:
-
 commitTransaction
 ^^^^^^^^^^^^^^^^^
 
 The commitTransaction server command has the following format:
 
-{
+.. code:: typescript
 
-commitTransaction : 1,
-
-lsid : { id : <UUID> },
-
-txnNumber: <Int64>,
-
-autocommmit: false,
-
-writeConcern: {...}
-
-}
-
-.. _aborttransaction-1:
+    {
+        commitTransaction : 1,
+        lsid : { id : <UUID> },
+        txnNumber : <Int64>,
+        autocommmit : false,
+        writeConcern : {...}
+    }
 
 abortTransaction
 ^^^^^^^^^^^^^^^^
 
 The abortTransaction server command has the following format:
 
-{
+.. code:: typescript
 
-abortTransaction : 1,
-
-lsid : { id : <UUID> },
-
-txnNumber: <Int64>,
-
-autocommmit: false,
-
-writeConcern: {...}
-
-}
+    {
+        abortTransaction : 1,
+        lsid : { id : <UUID> },
+        txnNumber : <Int64>,
+        autocommmit : false,
+        writeConcern : {...}
+    }
 
 Both commands MUST be sent to the admin database.
 
 The server response has the following format:
 
-{ok : 1 }
+.. code:: typescript
+
+    { ok : 1 }
 
 In case of an error, the server response has the following format:
 
-{ok : 0, errmsg : "...", code : <Number>, errorLabels: ["Label"] }
+.. code:: typescript
+
+    { ok : 0, errmsg : "...", code : <Number>, errorLabels: ["Label"] }
 
 In case of a write concern error, the server response has the following
 format:
 
-{ok : 1, writeConcernError: {code: <Number>} }
+.. code:: typescript
+
+    { ok : 1, writeConcernError: {code: <Number>, errmsg : "..."} }
 
 Error Reporting and Retrying Transactions
 -----------------------------------------
@@ -760,19 +749,22 @@ If an exception with the TransientTransactionError label is thrown, an
 application can retry the entire transaction from the beginning with a
 reasonable expectation that it will succeed. For example:
 
-| def run_transaction(client):
-| with client.start_session() as s:
-| with s.start_transaction():
-| collection_one.insert_one(doc1, session=s)
-| collection_two.insert_one(doc2, session=s)
-| while True:
-| try:
-| return run_transaction(client)
-| except (OperationFailure, ConnectionFailure) as exc:
-| if exc.has_error_label("TransientTransactionError"):
-| print("Transient transaction error, retrying...")
-| continue
-| raise
+.. code:: python
+
+    def run_transaction(client):
+        with client.start_session() as s:
+            with s.start_transaction():
+                collection_one.insert_one(doc1, session=s)
+                collection_two.insert_one(doc2, session=s)
+
+    while True:
+        try:
+            return run_transaction(client)
+        except (OperationFailure, ConnectionFailure) as exc:
+            if exc.has_error_label("TransientTransactionError"):
+                print("Transient transaction error, retrying...")
+                continue
+            raise
 
 In the above example, a transaction will never be committed twice. The
 retry loop ends when the transaction commits successfully or the
@@ -817,41 +809,44 @@ transaction has committed with the provided write concern. If this
 attempt fails it may also have the UnknownTransactionCommitResult error
 label. For example:
 
-| def run_transaction_and_retry_commit(client):
-| with client.start_session() as s:
-| with s.start_transaction():
-| collection_one.insert_one(doc1, session=s)
-| collection_two.insert_one(doc2, session=s)
-| while True:
-| try:
-| s.commit_transaction()
-| break
-| except (OperationFailure, ConnectionFailure) as exc:
-| if exc.has_error_label("UnknownTransactionCommitResult"):
-| print("Unknown commit result, retrying...")
-| continue
-| raise
-| while True:
-| try:
-| return run_transaction_and_retry_commit(client)
-| except (OperationFailure, ConnectionFailure) as exc:
-| if exc.has_error_label("TransientTransactionError"):
-| print("Transient transaction error, retrying...")
-| continue
-| raise
+.. code:: python
+
+    def run_transaction_and_retry_commit(client):
+        with client.start_session() as s:
+            with s.start_transaction():
+                collection_one.insert_one(doc1, session=s)
+                collection_two.insert_one(doc2, session=s)
+                while True:
+                    try:
+                        s.commit_transaction()
+                        break
+                    except (OperationFailure, ConnectionFailure) as exc:
+                        if exc.has_error_label("UnknownTransactionCommitResult"):
+                            print("Unknown commit result, retrying...")
+                            continue
+                        raise
+
+    while True:
+        try:
+            return run_transaction_and_retry_commit(client)
+        except (OperationFailure, ConnectionFailure) as exc:
+            if exc.has_error_label("TransientTransactionError"):
+                print("Transient transaction error, retrying...")
+                continue
+            raise
 
 **Test Plan**
 -------------
 
-| The transaction API spec tests can be found here:
-| https://github.com/mongodb/specifications/tree/master/source/transactions/tests
-| The Python driver serves as a reference implementation.
+See the `README <tests/README.rst>`_ for tests.
+
+The Python driver serves as a reference implementation.
 
 **Design Rationale**
 --------------------
 
 The design of this specification builds on the `Driver Session
-specification <https://docs.google.com/document/d/1DGCdfracpwyN9Wm_-3vkHXD-vI_yga7taqHhM3nVNB4/edit#>`__
+specification <https://github.com/mongodb/specifications/blob/master/source/sessions/driver-sessions.rst>`__
 and modifies the driver API as little as possible.
 
 Drivers will rely on the server to yield an error if an unsupported
@@ -878,23 +873,18 @@ no error, as well. However, we want to raise an error from
 abortTransaction if there is no transaction, because it discourages an
 antipattern like this:
 
-s.start_transaction()
+.. code:: python
 
-try:
+    s.start_transaction()
+    try:
+        coll.insert_one({}, session=s)
+        s.commit_transaction()
+    except:
+        # We don't know if it was the insert_one, the commit,
+        # or some other operation that failed, so we must not
+        # commit the transaction.
+        s.abort_transaction()  # Raises a client-side error
 
-coll.insert_one({}, session=s)
-
-s.commit_transaction()
-
-except:
-
-# We don't know if it was the insert_one, the commit,
-
-# or some other operation that failed, so we must not
-
-# commit the transaction.
-
-s.abort_transaction() # Raises a client-side error
 
 If a user puts "commit" in the same exception handling block as the
 other operations in the transaction, they don't know whether to retry
@@ -969,7 +959,7 @@ directly with minimum additional client-side logic.
 This specification depends on:
 
 1. `Driver Session
-      specification <https://docs.google.com/document/d/1DGCdfracpwyN9Wm_-3vkHXD-vI_yga7taqHhM3nVNB4/edit#>`__
+      specification <https://github.com/mongodb/specifications/blob/master/source/sessions/driver-sessions.rst>`__
 
 2. `Retryable writes
       specification <https://github.com/mongodb/specifications/blob/master/source/retryable-writes/retryable-writes.rst>`__
@@ -1087,34 +1077,28 @@ silently ignore the user's read concern (or other options) if it is
 prohibited with transactions, but this would be a surprising and
 undetectable deviation from the user's intent.
 
-client = MongoClient("mongodb://localhost?readPreference=nearest")
+.. code:: python
 
-with client.start_session() as s:
-
-txn_opts = TransactionOptions(read_preference=PRIMARY)
-
-with s.start_transaction(txn_opts):
-
-# Uses read preference secondary.
-
-client.db.collection.find_one(session=s, read_preference=SECONDARY)
+    client = MongoClient("mongodb://localhost?readPreference=nearest")
+    with client.start_session() as s:
+        txn_opts = TransactionOptions(read_preference=PRIMARY)
+        with s.start_transaction(txn_opts):
+            # Uses read preference secondary.
+            client.db.collection.find_one(session=s, read_preference=SECONDARY)
 
 On the other hand, if a user configures the read concern (or other
 options) of a client, database, or collection, and then configures the
 same option on a transaction, the transaction's configuration overrides
 the client's, database's, and collection's configuration:
 
-client = MongoClient("mongodb://localhost?readPreference=nearest")
+.. code:: python
 
-with client.start_session() as s:
-
-txn_opts = TransactionOptions(read_preference=PRIMARY)
-
-with s.start_transaction(txn_opts):
-
-# Uses read preference primary.
-
-client.db.collection.find_one(session=s)
+    client = MongoClient("mongodb://localhost?readPreference=nearest")
+    with client.start_session() as s:
+        txn_opts = TransactionOptions(read_preference=PRIMARY)
+        with s.start_transaction(txn_opts):
+            # Uses read preference primary.
+            client.db.collection.find_one(session=s)
 
 In this case the transaction options express a more immediate user
 intent than the client options, so it is not surprising to override the
