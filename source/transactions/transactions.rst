@@ -73,7 +73,7 @@ All operations that write and accept a ClientSession argument. All
 MongoClient, Database, Collection helpers that write including (but not
 limited to) creating, updating, or deleting databases, collections,
 indexes, and users. Aggregate (even with $out) is considered a read
-operation, see "Aggregate with $out is a read operation."
+operation, see `Aggregate with $out is a read operation`_.
 
 Retryable Error
 ^^^^^^^^^^^^^^^
