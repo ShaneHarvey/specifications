@@ -6,8 +6,8 @@ Driver Transactions Specification
 :Spec Version: 1.0
 :Author: Shane Harvey
 :Spec Lead: A\. Jesse Jiryu Davis
-:Advisory Group: Jeff Yemin, Spencer T. Brody
-:Approver(s): ?
+:Advisory Group: A\. Jesse Jiryu Davis, Matt Broadstone, Robert Stam, Jeff Yemin, Spencer Brody
+:Approver(s): A\. Jesse Jiryu Davis, Andrew Morrow, Bernie Hackett, Dan Pasette, Jeff Yemin, Robert Stam, Spencer Brody, Tess Avitabile
 :Informed: drivers@
 :Status: Accepted (Could be Draft, Accepted, Rejected, Final, or Replaced)
 :Type: Standards
