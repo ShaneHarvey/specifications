@@ -213,8 +213,8 @@ readConcern
 
 The readConcern to use for the first command, and only the first
 command, in a transaction. Server transactions are started lazily with
-the first command using this session. For supported values see `Behavior
-of the readConcern field <#behavior-of-the-readconcern-field>`__.
+the first command using this session. For supported values see
+`Behavior of the readConcern field`_.
 
 Note that the readConcern property is optional. The default value is
 NULL. If readConcern is NULL the value will be inherited from this
@@ -231,8 +231,7 @@ subsequent commands the readConcern from the transaction or any
 readConcern inherited from the collection, database, or client. If the
 user supplies an explicit readConcern via a method option, however,
 drivers MUST apply the readConcern, which will result in a server error.
-See `Users can pass prohibited options to operations in
-transactions <#users-can-pass-prohibited-options-to-operations-in-transactions>`__.
+See `Users can pass prohibited options to operations in transactions`_.
 
 The server will return an error if read concern level snapshot is
 specified on a command that is not the start of a transaction. Drivers
@@ -242,22 +241,22 @@ snapshot is used incorrectly.
 writeConcern
 ^^^^^^^^^^^^
 
-| The writeConcern to use for the commitTransaction and abortTransaction
-  commands. Note that the writeConcern property is optional. The default
-  value is NULL. If writeConcern is NULL the value will be inherited
-  from this session’s defaultTransactionOptions. If
-  defaultTransactionOptions itself is NULL or the writeConcern in
-  defaultTransactionOptions is NULL, the writeConcern is inherited from
-  the MongoClient associated with this session.
-| If the writeConcern is not the server default, then Drivers MUST add
-  the writeConcern to the commitTransaction and abortTransaction
-  commands. Drivers MUST NOT add the transaction’s writeConcern or any
-  writeConcern inherited from the collection, database, or client to any
-  preceding commands in the transaction. If the user supplies an
-  explicit writeConcern via a method option, however, drivers MUST apply
-  the writeConcern, which will result in a server error. See `Users can
-  pass prohibited options to operations in
-  transactions <#users-can-pass-prohibited-options-to-operations-in-transactions>`__.
+The writeConcern to use for the commitTransaction and abortTransaction
+commands. Note that the writeConcern property is optional. The default
+value is NULL. If writeConcern is NULL the value will be inherited
+from this session’s defaultTransactionOptions. If
+defaultTransactionOptions itself is NULL or the writeConcern in
+defaultTransactionOptions is NULL, the writeConcern is inherited from
+the MongoClient associated with this session.
+
+If the writeConcern is not the server default, then Drivers MUST add
+the writeConcern to the commitTransaction and abortTransaction
+commands. Drivers MUST NOT add the transaction’s writeConcern or any
+writeConcern inherited from the collection, database, or client to any
+preceding commands in the transaction. If the user supplies an
+explicit writeConcern via a method option, however, drivers MUST apply
+the writeConcern, which will result in a server error.
+See `Users can pass prohibited options to operations in transactions`_.
 
 Drivers MUST raise an error if the user provides or if defaults would
 result in an unacknowledged writeConcern. The Driver Sessions spec
@@ -284,9 +283,8 @@ In MongoDB 4.0, transactions may only read from the primary. If a read
 is attempted and the transaction’s read preference is not Primary
 drivers MUST raise an error containing the string "read preference in a
 transaction must be primary". Drivers MUST NOT validate the read
-preference during write operations or in startTransaction. See `Why is
-readPreference part of
-TransactionOptions? <#why-is-readpreference-part-of-transactionoptions>`__
+preference during write operations or in startTransaction.
+See `Why is readPreference part of TransactionOptions?`_.
 
 .. code:: python
 
@@ -390,8 +388,7 @@ destruction MUST NOT automatically commit the transaction.
 If the driver returns a type to support resource management blocks, the
 type MUST NOT be named "Transaction". The type MAY be named
 "TransactionContext", "TransactionScopeGuard" or something similar for
-your language. See `Why is there no Transaction
-object? <#why-is-there-no-transaction-object>`__
+your language. See `Why is there no Transaction object?`_
 
 commitTransaction
 ^^^^^^^^^^^^^^^^^
@@ -425,8 +422,8 @@ Retryable Writes Specification, regardless of whether retryWrites is set
 on the MongoClient or not.
 
 Drivers MUST add error labels to certain errors when commitTransaction
-fails. See the `Error reporting changes <#error-reporting-changes>`__
-and `Error Labels <#error-labels>`__ sections for a precise description.
+fails. See the `Error reporting changes`_ and `Error Labels`_ sections
+for a precise description.
 
 abortTransaction
 ^^^^^^^^^^^^^^^^
@@ -789,9 +786,8 @@ state of the transaction.
 
 The driver MUST add the UnknownTransactionCommitResult error label when
 commitTransaction fails with a network error, server selection error, or
-write concern failed / timeout. (See "`A server selection error is
-labeled
-UnknownTransactionCommitResult <#a-server-selection-error-is-labeled-unknowntransactioncommitresult>`__
+write concern failed / timeout. (See
+`A server selection error is labeled UnknownTransactionCommitResult`_
 for justification.) The approximate meaning of the
 UnknownTransactionCommitResult label is, "We don't know if your commit
 has satisfied the provided write concern." The only write concern errors
