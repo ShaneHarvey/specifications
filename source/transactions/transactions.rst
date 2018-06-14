@@ -1,199 +1,22 @@
-**Spec Title:** *Driver Transactions Specification* (See the `Spec
-Onion <https://docs.mongodb.com/ecosystem/drivers/specs/>`__ page)
-
-**Spec Version:** 1.0
-
-**Author:** *Shane Harvey*
-
-**Spec Lead:** *A. Jesse Jiryu Davis*
-
-**Advisory Group\ :**
-
-**Approver(s)\ :**
-
-**Informed :**\ *drivers@*
-
-**Status:** *Draft* (Could be Draft, Final, or Replaced)
-
-**Type:** Standards (Could be Process, Informational, or Standards)
-
-**Minimum Server Version:** 4.0 (The minimum server version this spec
-applies to)
-
-**Last Modified:** 22-May-2018 (Keep this up to date!)
-
-For use after publishing:
-
-**Obsoletes: # (Required if this spec “Replaced” another spec)**
-
-**Obsoleted by: # (Required when the spec state changes to “Replaced”)**
-
-**Sections below are required unless marked optional.**
-
-`Abstract <#abstract>`__
-
-`META <#meta>`__
-
-`Specification <#specification>`__
-
-   `Terms <#terms>`__
-
-   `Resource Management Block <#resource-management-block>`__
-
-   `Read operation <#read-operation>`__
-
-   `Write operation <#write-operation>`__
-
-   `Retryable Error <#retryable-error>`__
-
-   `Command Error <#command-error>`__
-
-   `Network Error <#network-error>`__
-
-   `Error Label <#error-label>`__
-
-   `Transient Transaction Error <#transient-transaction-error>`__
-
-   `Naming variations <#naming-variations>`__
-
-   `Transaction API <#transaction-api>`__
-
-   `TransactionOptions <#transactionoptions>`__
-
-   `readConcern <#readconcern>`__
-
-   `writeConcern <#writeconcern>`__
-
-   `readPreference <#readpreference>`__
-
-   `SessionOptions changes <#sessionoptions-changes>`__
-
-   `defaultTransactionOptions <#defaulttransactionoptions>`__
-
-   `ClientSession changes <#clientsession-changes>`__
-
-   `startTransaction <#starttransaction>`__
-
-   `commitTransaction <#committransaction>`__
-
-   `abortTransaction <#aborttransaction>`__
-
-   `endSession changes <#endsession-changes>`__
-
-   `Error reporting changes <#error-reporting-changes>`__
-
-`Transactions Wire Protocol <#transactions-wire-protocol>`__
-
-   `Constructing commands within a
-   transaction <#constructing-commands-within-a-transaction>`__
-
-   `Behavior of the startTransaction
-   field <#behavior-of-the-starttransaction-field>`__
-
-   `Behavior of the autocommit
-   field <#behavior-of-the-autocommit-field>`__
-
-   `Behavior of the readConcern
-   field <#behavior-of-the-readconcern-field>`__
-
-   `Behavior of the writeConcern
-   field <#behavior-of-the-writeconcern-field>`__
-
-   `Constructing the first command within a
-   transaction <#constructing-the-first-command-within-a-transaction>`__
-
-   `Constructing any other command within a
-   transaction <#constructing-any-other-command-within-a-transaction>`__
-
-   `Generic RunCommand helper within a
-   transaction <#generic-runcommand-helper-within-a-transaction>`__
-
-   `Interaction with Causal
-   Consistency <#interaction-with-causal-consistency>`__
-
-   `Interaction with Retryable
-   Writes <#interaction-with-retryable-writes>`__
-
-   `Server Commands <#server-commands>`__
-
-   `commitTransaction <#committransaction-1>`__
-
-   `abortTransaction <#aborttransaction-1>`__
-
-`Error Reporting <#error-reporting-and-retrying-transactions>`__
-
-   `Error Labels <#error-labels>`__
-
-   `TransientTransactionError <#transienttransactionerror>`__
-
-   `UnknownTransactionCommitResult <#unknowntransactioncommitresult>`__
-
-   `Retrying
-   transactions <#retrying-transactions-that-fail-with-transienttransactionerror>`__
-
-   `Retrying commitTransaction <#retrying-committransaction>`__
-
-`Test Plan <#test-plan>`__
-
-   `Prose tests <#_8u0gb94iqfqo>`__
-
-   `readConcern and writeConcern in runCommand <#_vapvzbs3l81f>`__
-
-`Design Rationale <#design-rationale>`__
-
-   `Drivers ignore all abortTransaction
-   errors <#drivers-ignore-all-aborttransaction-errors>`__
-
-   `Drivers add the TransientTransactionError label to network
-   errors <#drivers-add-the-transienttransactionerror-label-to-network-errors>`__
-
-   `Transactions in GridFS <#transactions-in-gridfs>`__
-
-   `Causal Consistency with RunCommand
-   helper <#causal-consistency-with-runcommand-helper>`__
-
-   `Calling commitTransaction with the generic runCommand helper is
-   undefined
-   behavior <#calling-committransaction-with-the-generic-runcommand-helper-is-undefined-behavior>`__
-
-`Dependencies <#dependencies>`__
-
-`Backwards Compatibility <#backwards-compatibility>`__
-
-`Reference Implementation <#reference-implementation>`__
-
-`Future work <#future-work>`__
-
-`Justifications <#justifications>`__
-
-   `Why is there no Transaction
-   object? <#why-is-there-no-transaction-object>`__
-
-   `Why is readPreference part of
-   TransactionOptions? <#why-is-readpreference-part-of-transactionoptions>`__
-
-   `Users can pass prohibited options to operations in
-   transactions <#users-can-pass-prohibited-options-to-operations-in-transactions>`__
-
-   `Aggregate with $out is a read
-   operation <#aggregate-with-out-is-a-read-operation>`__
-
-   `A server selection error is labeled
-   UnknownTransactionCommitResult <#a-server-selection-error-is-labeled-unknowntransactioncommitresult>`__
-
-`FAQ <#faq>`__
-
-   `What commands can be run in a
-   transaction? <#what-commands-can-be-run-in-a-transaction>`__
-
-   `Why don’t drivers retry after write concern timeout
-   errors? <#why-dont-drivers-retry-after-write-concern-timeout-errors>`__
-
-   `What happens when a command object passed to RunCommand already
-   contains a transaction field (eg. lsid, txnNumber,
-   etc...)? <#what-happens-when-a-command-object-passed-to-runcommand-already-contains-a-transaction-field-eg.-lsid-txnnumber-etc...>`__
-
-`Changelog <#changelog>`__
+=================================
+Driver Transactions Specification
+=================================
+
+:Spec Title: Driver Transactions Specification
+:Spec Version: 1.0
+:Author: Shane Harvey
+:Spec Lead: A\. Jesse Jiryu Davis
+:Advisory Group: Jeff Yemin, Spencer T. Brody
+:Approver(s): ?
+:Informed: drivers@
+:Status: Accepted (Could be Draft, Accepted, Rejected, Final, or Replaced)
+:Type: Standards
+:Minimum Server Version: 4.0 (The minimum server version this spec applies to)
+:Last Modified: 14-June-2018
+
+.. contents::
+
+--------
 
 **Abstract**
 ------------
@@ -207,16 +30,16 @@ For use after publishing:
   natural interface for application developers and DBAs who use
   multi-statement transactions.
 
-**META** 
----------
+**META**
+--------
 
 The keywords “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”,
 “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this
 document are to be interpreted as described in \`RFC 2119
 <https://www.ietf.org/rfc/rfc2119.txt>`_.
 
-**Specification** 
-------------------
+**Specification**
+-----------------
 
 **Terms**
 ~~~~~~~~~
@@ -807,8 +630,8 @@ autocommit: false
 
 }
 
-Generic RunCommand helper within a transaction 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Generic RunCommand helper within a transaction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If your driver offers a generic RunCommand method on your database
 object, the driver MUST add the lsid, autocommit, and txnNumber fields.
@@ -1017,8 +840,8 @@ label. For example:
 | continue
 | raise
 
-**Test Plan** 
---------------
+**Test Plan**
+-------------
 
 | The transaction API spec tests can be found here:
 | https://github.com/mongodb/specifications/tree/master/source/transactions/tests
@@ -1128,8 +951,8 @@ starts a transaction must include afterClusterTime, so we can add
 afterClusterTime to the document passed to runCommand without adding
 per-command special logic to runCommand.
 
-Calling commitTransaction with the generic runCommand helper is undefined behavior 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Calling commitTransaction with the generic runCommand helper is undefined behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Applications should only use the ClientSession API to manage
 transactions. Applications should not use a generic runCommand helper to
@@ -1166,8 +989,8 @@ document is approved. The implementation will include test code and
 documentation. The .NET, Java, and Node.js teams may also implement POCs
 before this document is approved.
 
-**Future work** 
-----------------
+**Future work**
+---------------
 
 -  Support retryable writes within a transaction.
 
@@ -1329,8 +1152,8 @@ The following commands are allowed inside transactions:
 2.  getMore
 
     -  Note that it is not possible to start a transaction with a
-          getMore command, the cursor must have been created within the
-          transaction in order for the getMore to succeed.
+       getMore command, the cursor must have been created within the
+       transaction in order for the getMore to succeed.
 
 3.  killCursors
 
@@ -1345,9 +1168,7 @@ The following commands are allowed inside transactions:
 8.  aggregate (including $lookup)
 
     -  The $out stage is prohibited because it uses collection create
-          and rename operations
-
-    -  countDocuments.
+       and rename operations.
 
 9.  distinct
 
@@ -1370,41 +1191,7 @@ Applications should not run such commands inside a transaction.
 **Changelog**
 -------------
 
-A record of all changes to the spec after it’s been approved and
-published. Each item in the changelog should be accompanied by
-appropriate reference to version bump.
-
-*07-March-2018 - Version 1.0 - Initial Draft*
-
-*23-March-2018 - Removed implicit autocommit transactions for snapshot
-reads*
-
-*05-April-2018 - Added startTransaction:true field*
-
-*06-April-2018 - Move transactions on secondaries and session pinning to
-future work*
-
-*12-April-2018 - It is valid for startTransaction to be called on an
-autoStartTransaction session*
-
-*16-April-2018 - readConcern is inherited in the same way as
-writeConcern*
-
-*19-April-2018 - Remove stmtId field.*
-
-*23-April-2018 - Removed TransactionAborted exception class.*
-
-*25-April-2018 - Added readPreference to TransactionOptions.*
-
-*08-May-2018 - Added error labels. TransientTransactionError for
-retrying entire transaction.*
-
-*UnknownTransactionCommitResult for retrying only the
-commitTransaction.*
-
-*16-May-2018 - Removed autoStartTransaction.*
-
-*07-June-2018 - The count command is not supported within transactions.*
+:2018-06-07: The count command is not supported within transactions.
 
 .. |image0| image:: client-session-transaction-states.png
    :width: 6.5in
