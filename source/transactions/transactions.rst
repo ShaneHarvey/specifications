@@ -21,14 +21,15 @@ Driver Transactions Specification
 **Abstract**
 ------------
 
-| Version 4.0 of the server introduces multi-statement transactions.
-  This spec builds upon the Driver Sessions Specification to define how
-  an application uses transactions and how a driver interacts with the
-  server to implement transactions.
-| The API for transactions must be specified to ensure that all drivers
-  and the mongo shell are consistent with each other, and to provide a
-  natural interface for application developers and DBAs who use
-  multi-statement transactions.
+Version 4.0 of the server introduces multi-statement transactions.
+This spec builds upon the Driver Sessions Specification to define how an
+application uses transactions and how a driver interacts with the
+server to implement transactions.
+
+The API for transactions must be specified to ensure that all drivers and
+the mongo shell are consistent with each other, and to provide a natural
+interface for application developers and DBAs who use multi-statement
+transactions.
 
 **META**
 --------
@@ -916,18 +917,19 @@ GridFS spec has been updated to support sessions, then drivers that
 implement that spec MUST also support transactions in GridFS because all
 APIs that allow sessions MUST support transactions.
 
-| Drivers that have already implemented session support in GridFS MUST
-  also support transactions in GridFS. Drivers that have not implemented
-  ClientSession support in GridFS are not required to support
-  transactions (or sessions) in GridFS.
-| This spec does not require all drivers to implement transaction
-  support in GridFS because transactions in GridFS are not very useful:
-  transactions in 4.0 are too limited in time and space to operate on
-  large GridFS files. Additionally, GridFS as specified already has some
-  basic guarantees that make transactions less necessary: files are
-  immutable and they are created "atomically", from the primary's
-  perspective, because the file entry is only saved after all chunks are
-  uploaded.
+Drivers that have already implemented session support in GridFS MUST
+also support transactions in GridFS. Drivers that have not implemented
+ClientSession support in GridFS are not required to support
+transactions (or sessions) in GridFS.
+
+This spec does not require all drivers to implement transaction
+support in GridFS because transactions in GridFS are not very useful:
+transactions in 4.0 are too limited in time and space to operate on
+large GridFS files. Additionally, GridFS as specified already has some
+basic guarantees that make transactions less necessary: files are
+immutable and they are created "atomically", from the primary's
+perspective, because the file entry is only saved after all chunks are
+uploaded.
 
 Causal Consistency with RunCommand helper
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
