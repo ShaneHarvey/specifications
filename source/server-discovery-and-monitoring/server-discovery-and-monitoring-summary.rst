@@ -129,7 +129,7 @@ or when no suitable server is found for a write or a read.
 
 Drivers differ from Mongos 2.6 in two respects. First,
 if a client frequently rechecks a server,
-it MUST wait at least 10 ms
+it MUST wait at least 500 ms
 since the previous check to avoid excessive effort.
 
 Second, Mongos 2.6 does not monitor arbiters, but drivers MUST do so.
@@ -145,10 +145,22 @@ other monitors MUST proceed unimpeded.
 The natural implementation is a thread per server,
 but the decision is left to the implementer.
 
+Periodic Protocol
+`````````````````
+
 Multi-threaded and asynchronous drivers
 MUST call ismaster on servers every 10 seconds by default.
 (10 seconds is Mongos's frequency.)
 This frequency MAY be configurable.
+
+Streaming Protocol
+``````````````````
+
+In the streaming protocol introduced in MongoDB 4.4, drivers use awaitable
+ismaster to stream responses from the server. When the server changes state,
+it immediatly responds to awaiting clients so that drivers can discover the
+new primary as soon as possible.
+
 
 Single-threaded monitoring
 ''''''''''''''''''''''''''
@@ -197,6 +209,9 @@ make it inferior to simply trusting the primary.
 
 Error handling
 --------------
+
+TODO: This summary is out of date now that we use topologyVersion and CMAP
+generation number. Either rewrite or just link to the canonical section.
 
 When an application operation fails because of
 any network error besides a socket timeout,
