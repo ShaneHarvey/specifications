@@ -1,0 +1,181 @@
+# Test SDAM error handling.
+runOn:
+    # failCommand appName requirements
+    - minServerVersion: "4.4"
+
+database_name: &database_name "sdam-tests"
+collection_name: &collection_name "error-handling"
+
+data: &data
+  - {_id: 1}
+  - {_id: 2}
+
+tests:
+  - description: Reset server and pool once after network error (Option 1)
+    failPoint:
+      configureFailPoint: failCommand
+      mode: { times: 1 }
+      data:
+          failCommands: ["insert"]
+          closeConnection: true
+          appName: clearPoolOnceTest
+    clientOptions:
+      retryWrites: false
+      appName: clearPoolOnceTest
+    subscribe:
+      - PoolClearedEvent
+      - CommandStartedEvent
+    operations:
+      - name: insertMany
+        object: collection
+        arguments:
+          documents:
+            - _id: 3
+            - _id: 4
+        error: true
+
+    expectations:
+      - command_started_event:
+          command:
+            insert: *collection_name
+            documents:
+              - _id: 3
+              - _id: 4
+          command_name: insert
+          database_name: *database_name
+      - PoolClearedEvent: {}  # A single PoolClearedEvent
+
+    outcome:
+      collection:
+        data:
+          - {_id: 1}
+          - {_id: 2}
+
+  - description: Reset server and pool once after network error (Option 2)
+    failPoint:
+      configureFailPoint: failCommand
+      mode: { times: 1 }
+      data:
+          failCommands: ["insert"]
+          closeConnection: true
+          appName: clearPoolOnceTest
+    clientOptions:
+      retryWrites: false
+      appName: clearPoolOnceTest
+    subscribe:
+      - PoolClearedEvent
+      - ConnectionCreatedEvent
+      - CommandStartedEvent
+    operations:
+      - name: insertMany
+        object: collection
+        arguments:
+          documents:
+            - _id: 3
+            - _id: 4
+        error: true
+      - name: insertMany  # Perform another operation to indirectly ensure the pool was cleared
+        object: collection
+        arguments:
+          documents:
+            - _id: 3
+            - _id: 4
+
+    expectations:
+      - ConnectionCreatedEvent: {}
+      - command_started_event:
+          command:
+            insert: *collection_name
+            documents:
+              - _id: 3
+              - _id: 4
+          command_name: insert
+          database_name: *database_name
+      - PoolClearedEvent: {}  # A single PoolClearedEvent
+
+    outcome:
+      collection:
+        data:
+          - {_id: 1}
+          - {_id: 2}
+          - {_id: 3}
+          - {_id: 4}
+
+  - description: Reset server and pool once after network error (Option 3)
+    failPoint:
+      configureFailPoint: failCommand
+      mode: { times: 1 }
+      data:
+          failCommands: ["insert"]
+          closeConnection: true
+          appName: clearPoolOnceTest
+    clientOptions:
+      retryWrites: false
+      appName: clearPoolOnceTest
+    operations:
+      - name: insertMany
+        object: collection
+        arguments:
+          documents:
+            - _id: 3
+            - _id: 4
+        error: true
+      - name: assertPoolClearedEvent
+        object: testRunner
+
+    expectations:
+      - command_started_event:
+          command:
+            insert: *collection_name
+            documents:
+              - _id: 3
+              - _id: 4
+          command_name: insert
+          database_name: *database_name
+
+    outcome:
+      collection:
+        data:
+          - {_id: 1}
+          - {_id: 2}
+
+  - description: Reset server and pool once after network error (Option 4)
+    failPoint:
+      configureFailPoint: failCommand
+      mode: { times: 1 }
+      data:
+          failCommands: ["insert"]
+          closeConnection: true
+          appName: clearPoolOnceTest
+    clientOptions:
+      retryWrites: false
+      appName: clearPoolOnceTest
+    operations:
+      - name: insertMany
+        object: collection
+        arguments:
+          documents:
+            - _id: 3
+            - _id: 4
+        error: true
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: PoolClearedEvent
+          count: 1
+
+    expectations:
+      - command_started_event:
+          command:
+            insert: *collection_name
+            documents:
+              - _id: 3
+              - _id: 4
+          command_name: insert
+          database_name: *database_name
+
+    outcome:
+      collection:
+        data:
+          - {_id: 1}
+          - {_id: 2}
