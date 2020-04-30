@@ -2,6 +2,10 @@
 Server Discovery And Monitoring Tests
 =====================================
 
+.. contents::
+
+----
+
 The YAML and JSON files in this directory tree are platform-independent tests
 that drivers can use to prove their conformance to the
 Server Discovery And Monitoring Spec.
@@ -137,6 +141,131 @@ the driver's current TopologyDescription or ServerDescription.
 For monitoring tests, clear the list of events collected so far.
 
 Continue until all phases have been executed.
+
+Integration Tests
+-----------------
+
+Integration tests are provided in the "spec" directory.
+
+Test Format
+~~~~~~~~~~~
+
+The same as the `Transactions Spec Test format
+</source/transactions/tests/README.rst#test-format>`_.
+
+Special Test Operations
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Certain operations that appear in the "operations" array do not correspond to
+API methods but instead represent special test operations. Such operations are
+defined on the "testRunner" object and are documented in the
+`Transactions Spec Test
+</source/transactions/tests/README.rst#special-test-operations>`_.
+
+Additional, SDAM test specific operations are documented here:
+
+configureFailPoint
+''''''''''''''''''
+
+The "configureFailPoint" operation instructs the test runner to configure
+the given server failpoint on the "admin" database. The runner MUST disable
+this failpoint at the end of the test. For example::
+
+      - name: configureFailPoint
+        object: testRunner
+        arguments:
+          failPoint:
+            configureFailPoint: failCommand
+            mode: { times: 1 }
+            data:
+                failCommands: ["insert"]
+                closeConnection: true
+
+Tests that use the "configureFailPoint" operation do not include
+``configureFailPoint`` commands in their command expectations. Drivers MUST
+ensure that ``configureFailPoint`` commands do not appear in the list of logged
+commands, either by manually filtering it from the list of observed commands or
+by using a different MongoClient to execute ``configureFailPoint``.
+
+wait
+''''
+
+The "wait" operation instructs the test runner to sleep for "ms"
+milliseconds. For example::
+
+      - name: wait
+        object: testRunner
+        arguments:
+          ms: 1000
+
+waitForEvent
+''''''''''''
+
+The "waitForEvent" operation instructs the test runner to wait until the test's
+MongoClient has published a specific event a given number of times. For
+example, the following instructs the test runner to wait for at least one
+PoolClearedEvent to be published::
+
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: PoolClearedEvent
+          count: 1
+
+assertEventCount
+''''''''''''''''
+
+The "assertEventCount" operation instructs the test runner to assert the test's
+MongoClient has published a specific event a given number of times. For
+example, the following instructs the test runner to assert that a single
+PoolClearedEvent was published::
+
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: PoolClearedEvent
+          count: 1
+
+recordPrimary
+'''''''''''''
+
+The "recordPrimary" operation instructs the test runner to record the current
+primary of the test's MongoClient. For example::
+
+      - name: recordPrimary
+        object: testRunner
+
+runAdminCommand
+'''''''''''''''
+
+The "runAdminCommand" operation instructs the test runner to run the given
+command on the admin database. Drivers MUST run this command on a different
+MongoClient from the one used for test operations. For example::
+
+      - name: runAdminCommand
+        object: testRunner
+        command_name: replSetStepDown
+        arguments:
+          command:
+            replSetStepDown: 20
+            force: false
+
+waitForPrimaryChange
+''''''''''''''''''''
+
+The "waitForPrimaryChange" operation instructs the test runner to wait up to
+"timeoutMS" milliseconds for the MongoClient to discover a new primary server.
+The new primary should be different from the one recorded by "recordPrimary".
+For example::
+
+      - name: waitForPrimaryChange
+        object: testRunner
+        arguments:
+          timeoutMS: 15000
+
+To implement, Drivers can subscribe to ServerDescriptionChangedEvents and wait
+for an event where newDescription.type is ``RSPrimary`` and the address is
+different from the one previously recorded by "recordPrimary".
 
 Prose Tests
 -----------

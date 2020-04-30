@@ -1,11 +1,14 @@
 {
   "runOn": [
     {
-      "minServerVersion": "4.4"
+      "minServerVersion": "4.4",
+      "topology": [
+        "replicaset"
+      ]
     }
   ],
   "database_name": "sdam-tests",
-  "collection_name": "error-handling",
+  "collection_name": "test-replSetStepDown",
   "data": [
     {
       "_id": 1
@@ -16,23 +19,12 @@
   ],
   "tests": [
     {
-      "description": "Reset server and pool after network error",
-      "failPoint": {
-        "configureFailPoint": "failCommand",
-        "mode": {
-          "times": 1
-        },
-        "data": {
-          "failCommands": [
-            "insert"
-          ],
-          "closeConnection": true,
-          "appName": "clearPoolTest"
-        }
-      },
+      "description": "Rediscover quickly after replSetStepDown",
       "clientOptions": {
-        "retryWrites": false,
-        "appName": "clearPoolTest"
+        "appName": "replSetStepDownTest",
+        "heartbeatFrequencyMS": 60000,
+        "serverSelectionTimeoutMS": 5000,
+        "w": "majority"
       },
       "operations": [
         {
@@ -47,15 +39,28 @@
                 "_id": 4
               }
             ]
-          },
-          "error": true
+          }
         },
         {
-          "name": "waitForEvent",
+          "name": "recordPrimary",
+          "object": "testRunner"
+        },
+        {
+          "name": "runAdminCommand",
+          "object": "testRunner",
+          "command_name": "replSetStepDown",
+          "arguments": {
+            "command": {
+              "replSetStepDown": 20,
+              "force": false
+            }
+          }
+        },
+        {
+          "name": "waitForPrimaryChange",
           "object": "testRunner",
           "arguments": {
-            "event": "PoolClearedEvent",
-            "count": 1
+            "timeoutMS": 15000
           }
         },
         {
@@ -77,7 +82,7 @@
           "object": "testRunner",
           "arguments": {
             "event": "PoolClearedEvent",
-            "count": 1
+            "count": 0
           }
         }
       ],
@@ -85,7 +90,7 @@
         {
           "command_started_event": {
             "command": {
-              "insert": "error-handling",
+              "insert": "test-replSetStepDown",
               "documents": [
                 {
                   "_id": 3
@@ -102,7 +107,7 @@
         {
           "command_started_event": {
             "command": {
-              "insert": "error-handling",
+              "insert": "test-replSetStepDown",
               "documents": [
                 {
                   "_id": 5
@@ -125,6 +130,12 @@
             },
             {
               "_id": 2
+            },
+            {
+              "_id": 3
+            },
+            {
+              "_id": 4
             },
             {
               "_id": 5
