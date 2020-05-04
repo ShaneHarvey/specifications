@@ -11,7 +11,6 @@ data: []
 tests:
   - description: Monitor handles moreToCome
     clientOptions:
-      retryWrites: false
       heartbeatFrequencyMS: 500
       appName: moreToComeTest
     operations:
@@ -34,6 +33,13 @@ tests:
         object: testRunner
         arguments:
           ms: 2000
+      # Disable the moreToCome flag on isMaster responses.
+      - name: configureFailPoint
+        object: testRunner
+        arguments:
+          failPoint:
+            configureFailPoint: doNotSetMoreToCome
+            mode: "off"
       # Perform an operation to ensure the node is still selectable.
       - name: insertMany
         object: collection
@@ -41,13 +47,11 @@ tests:
           documents:
             - _id: 3
             - _id: 4
-      # TODO: Assert that the server was never marked Unknown.
-      # Assert that the pool was never cleared.
-      - name: assertEventCount
-        object: testRunner
-        arguments:
-          event: PoolClearedEvent
-          count: 0
+      # TODO: SERVER-47932 doNotSetMoreToCome ends up violating the OP_MSG
+      # protocol because it disables moreToCome but does not end the isMaster
+      # stream. Once this is resolved with we should:
+      # - Assert that the server was never marked Unknown.
+      # - Assert that the pool was never cleared.
 
     expectations:
       - command_started_event:

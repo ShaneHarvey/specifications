@@ -11,7 +11,6 @@
     {
       "description": "Monitor handles moreToCome",
       "clientOptions": {
-        "retryWrites": false,
         "heartbeatFrequencyMS": 500,
         "appName": "moreToComeTest"
       },
@@ -50,6 +49,16 @@
           }
         },
         {
+          "name": "configureFailPoint",
+          "object": "testRunner",
+          "arguments": {
+            "failPoint": {
+              "configureFailPoint": "doNotSetMoreToCome",
+              "mode": "off"
+            }
+          }
+        },
+        {
           "name": "insertMany",
           "object": "collection",
           "arguments": {
@@ -61,14 +70,6 @@
                 "_id": 4
               }
             ]
-          }
-        },
-        {
-          "name": "assertEventCount",
-          "object": "testRunner",
-          "arguments": {
-            "event": "PoolClearedEvent",
-            "count": 0
           }
         }
       ],
