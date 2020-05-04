@@ -1,0 +1,76 @@
+# Test SDAM doNotSetMoreToCome.
+runOn:
+    # doNotSetMoreToCome requirements
+    - minServerVersion: "4.4"
+
+database_name: &database_name "sdam-tests"
+collection_name: &collection_name "isMaster-moreToComeTest"
+
+data: []
+
+tests:
+  - description: Monitor handles moreToCome
+    clientOptions:
+      retryWrites: false
+      heartbeatFrequencyMS: 500
+      appName: moreToComeTest
+    operations:
+      # Perform an operation to ensure the node is discovered.
+      - name: insertMany
+        object: collection
+        arguments:
+          documents:
+            - _id: 1
+            - _id: 2
+      # Disable the moreToCome flag on isMaster responses.
+      - name: configureFailPoint
+        object: testRunner
+        arguments:
+          failPoint:
+            configureFailPoint: doNotSetMoreToCome
+            mode: { times: 100 }
+      # Wait for multiple monitor checks to complete.
+      - name: wait
+        object: testRunner
+        arguments:
+          ms: 2000
+      # Perform an operation to ensure the node is still selectable.
+      - name: insertMany
+        object: collection
+        arguments:
+          documents:
+            - _id: 3
+            - _id: 4
+      # TODO: Assert that the server was never marked Unknown.
+      # Assert that the pool was never cleared.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: PoolClearedEvent
+          count: 0
+
+    expectations:
+      - command_started_event:
+          command:
+            insert: *collection_name
+            documents:
+              - _id: 1
+              - _id: 2
+          command_name: insert
+          database_name: *database_name
+      - command_started_event:
+          command:
+            insert: *collection_name
+            documents:
+              - _id: 3
+              - _id: 4
+          command_name: insert
+          database_name: *database_name
+
+    outcome:
+      collection:
+        data:
+          - {_id: 1}
+          - {_id: 2}
+          - {_id: 3}
+          - {_id: 4}
