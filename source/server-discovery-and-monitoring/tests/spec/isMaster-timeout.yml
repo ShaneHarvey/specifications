@@ -74,7 +74,7 @@ tests:
   - description: Network timeout on Monitor check
     clientOptions:
       retryWrites: false
-      connectTimeoutMS: 250
+      connectTimeoutMS: 750
       heartbeatFrequencyMS: 500
       appName: timeoutMonitorCheckTest
     operations:
@@ -86,12 +86,13 @@ tests:
             - _id: 1
             - _id: 2
       # Configure the next streaming isMaster check to fail with a timeout
+      # Use times: 2 so that the RTT isMaster is blocked as well.
       - name: configureFailPoint
         object: testRunner
         arguments:
           failPoint:
             configureFailPoint: failCommand
-            mode: { times: 1 }
+            mode: { times: 2 }
             data:
                 failCommands: ["isMaster"]
                 appName: timeoutMonitorCheckTest
