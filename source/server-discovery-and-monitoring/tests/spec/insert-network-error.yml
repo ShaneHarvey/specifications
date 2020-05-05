@@ -4,24 +4,24 @@ runOn:
     - minServerVersion: "4.4"
 
 database_name: &database_name "sdam-tests"
-collection_name: &collection_name "error-handling"
+collection_name: &collection_name "insert-network-error"
 
 data: &data
   - {_id: 1}
   - {_id: 2}
 
 tests:
-  - description: Reset server and pool after network error
+  - description: Reset server and pool after network error on insert
     failPoint:
       configureFailPoint: failCommand
       mode: { times: 1 }
       data:
           failCommands: ["insert"]
           closeConnection: true
-          appName: clearPoolTest
+          appName: insertNetworkErrorTest
     clientOptions:
       retryWrites: false
-      appName: clearPoolTest
+      appName: insertNetworkErrorTest
     operations:
       - name: insertMany
         object: collection
@@ -30,6 +30,11 @@ tests:
             - _id: 3
             - _id: 4
         error: true
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: waitForEvent
         object: testRunner
         arguments:
@@ -42,7 +47,12 @@ tests:
           documents:
             - _id: 5
             - _id: 6
-      # Assert that the pool was cleared only once.
+      # Assert the server was marked Unknown and pool was cleared exactly once.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: assertEventCount
         object: testRunner
         arguments:

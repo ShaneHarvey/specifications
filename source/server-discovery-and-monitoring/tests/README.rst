@@ -212,6 +212,16 @@ PoolClearedEvent to be published::
           event: PoolClearedEvent
           count: 1
 
+Note that "count" includes events that were published while running previous
+operations.
+
+ServerMarkedUnknownEvent
+````````````````````````
+
+The ServerMarkedUnknownEvent may appear as an event in `waitForEvent`_ and
+`assertEventCount`_. This event is defined as ServerDescriptionChangedEvent
+where newDescription.type is ``Unknown``.
+
 assertEventCount
 ''''''''''''''''
 

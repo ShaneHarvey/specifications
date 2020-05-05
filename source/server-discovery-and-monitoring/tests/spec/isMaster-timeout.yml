@@ -24,7 +24,13 @@ tests:
       heartbeatFrequencyMS: 500
       appName: timeoutMonitorHandshakeTest
     operations:
-      # The network error on the initial handshake should clear the pool.
+      # The network error on the initial handshake should mark the server
+      # Unknown and clear the pool.
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: waitForEvent
         object: testRunner
         arguments:
@@ -37,7 +43,12 @@ tests:
           documents:
             - _id: 1
             - _id: 2
-      # Assert that the pool was cleared only once.
+      # Assert the server was marked Unknown and pool was cleared exactly once.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: assertEventCount
         object: testRunner
         arguments:
@@ -86,20 +97,31 @@ tests:
                 appName: timeoutMonitorCheckTest
                 blockConnection: true
                 blockTimeMS: 1000
-      # The network error on the next check should clear the pool.
+      # The network error on the next check should mark the server Unknown and
+      # clear the pool.
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: waitForEvent
         object: testRunner
         arguments:
           event: PoolClearedEvent
           count: 1
-      # Perform an operation to ensure the node is discovered.
+      # Perform an operation to ensure the node is rediscovered.
       - name: insertMany
         object: collection
         arguments:
           documents:
             - _id: 3
             - _id: 4
-      # Assert that the pool was cleared only once.
+      # Assert the server was marked Unknown and pool was cleared exactly once.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: assertEventCount
         object: testRunner
         arguments:
@@ -158,8 +180,13 @@ tests:
           documents:
             - _id: 3
             - _id: 4
-      # TODO: Assert that the server was never marked Unknown.
-      # Assert that the pool was never cleared.
+      # Assert that the server was never marked Unknown and the pool was never
+      # cleared.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 0
       - name: assertEventCount
         object: testRunner
         arguments:

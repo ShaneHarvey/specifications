@@ -23,7 +23,13 @@ tests:
       heartbeatFrequencyMS: 500
       appName: networkErrorHandshakeTest
     operations:
-      # The network error on the initial handshake should clear the pool.
+      # The network error on the initial handshake should mark the server
+      # Unknown and clear the pool.
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: waitForEvent
         object: testRunner
         arguments:
@@ -36,7 +42,12 @@ tests:
           documents:
             - _id: 1
             - _id: 2
-      # Assert that the pool was cleared only once.
+      # Assert the server was marked Unknown and pool was cleared exactly once.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: assertEventCount
         object: testRunner
         arguments:
@@ -85,20 +96,31 @@ tests:
                 failCommands: ["isMaster"]
                 appName: networkErrorCheckTest
                 closeConnection: true
-      # The network error on the next check should clear the pool.
+      # The network error on the next check should mark the server Unknown and
+      # clear the pool.
+      - name: waitForEvent
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: waitForEvent
         object: testRunner
         arguments:
           event: PoolClearedEvent
           count: 1
-      # Perform an operation to ensure the node is discovered.
+      # Perform an operation to ensure the node is rediscovered.
       - name: insertMany
         object: collection
         arguments:
           documents:
             - _id: 3
             - _id: 4
-      # Assert that the pool was cleared only once.
+      # Assert the server was marked Unknown and pool was cleared exactly once.
+      - name: assertEventCount
+        object: testRunner
+        arguments:
+          event: ServerMarkedUnknownEvent
+          count: 1
       - name: assertEventCount
         object: testRunner
         arguments:
