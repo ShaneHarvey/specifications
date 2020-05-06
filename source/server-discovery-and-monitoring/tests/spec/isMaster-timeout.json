@@ -28,7 +28,7 @@
         "retryWrites": false,
         "connectTimeoutMS": 250,
         "heartbeatFrequencyMS": 500,
-        "appName": "timeoutMonitorHandshakeTest"
+        "appname": "timeoutMonitorHandshakeTest"
       },
       "operations": [
         {
@@ -116,7 +116,7 @@
         "retryWrites": false,
         "connectTimeoutMS": 750,
         "heartbeatFrequencyMS": 500,
-        "appName": "timeoutMonitorCheckTest"
+        "appname": "timeoutMonitorCheckTest"
       },
       "operations": [
         {
@@ -261,7 +261,7 @@
         "retryWrites": false,
         "connectTimeoutMS": 250,
         "heartbeatFrequencyMS": 500,
-        "appName": "extendsTimeoutTest"
+        "appname": "extendsTimeoutTest"
       },
       "operations": [
         {

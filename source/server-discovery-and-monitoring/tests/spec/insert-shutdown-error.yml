@@ -13,7 +13,7 @@ tests:
     clientOptions:
       retryWrites: false
       heartbeatFrequencyMS: 500
-      appName: shutdownErrorInsertTest
+      appname: shutdownErrorInsertTest
     operations:
       # Perform an operation to ensure the node is discovered.
       - name: insertOne

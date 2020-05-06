@@ -14,7 +14,7 @@ data: &data
 tests:
   - description: Rediscover quickly after replSetStepDown
     clientOptions:
-      appName: replSetStepDownTest
+      appname: replSetStepDownTest
       # Configure a large heartbeatFrequencyMS
       heartbeatFrequencyMS: 60000
       # Configure a much smaller server selection timeout so that the test

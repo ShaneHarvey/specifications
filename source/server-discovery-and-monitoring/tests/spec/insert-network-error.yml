@@ -21,7 +21,7 @@ tests:
           appName: insertNetworkErrorTest
     clientOptions:
       retryWrites: false
-      appName: insertNetworkErrorTest
+      appname: insertNetworkErrorTest
     operations:
       - name: insertMany
         object: collection

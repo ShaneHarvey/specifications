@@ -28,7 +28,7 @@
         "retryWrites": false,
         "connectTimeoutMS": 250,
         "heartbeatFrequencyMS": 500,
-        "appName": "commandErrorHandshakeTest"
+        "appname": "commandErrorHandshakeTest"
       },
       "operations": [
         {
@@ -116,7 +116,7 @@
         "retryWrites": false,
         "connectTimeoutMS": 1000,
         "heartbeatFrequencyMS": 500,
-        "appName": "commandErrorCheckTest"
+        "appname": "commandErrorCheckTest"
       },
       "operations": [
         {

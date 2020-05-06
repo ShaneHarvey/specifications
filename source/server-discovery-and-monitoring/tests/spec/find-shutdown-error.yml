@@ -14,7 +14,7 @@ tests:
       retryWrites: false
       retryReads: false
       heartbeatFrequencyMS: 500
-      appName: shutdownErrorFindTest
+      appname: shutdownErrorFindTest
     operations:
       # Perform an operation to ensure the node is discovered.
       - name: insertOne

@@ -12,7 +12,7 @@ tests:
   - description: Monitor handles moreToCome
     clientOptions:
       heartbeatFrequencyMS: 500
-      appName: moreToComeTest
+      appname: moreToComeTest
     operations:
       # Perform an operation to ensure the node is discovered.
       - name: insertMany

@@ -22,7 +22,7 @@ tests:
     clientOptions:
       retryWrites: false
       retryReads: false
-      appName: findNetworkErrorTest
+      appname: findNetworkErrorTest
     operations:
       - name: find
         object: collection
