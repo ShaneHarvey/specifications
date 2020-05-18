@@ -1,28 +1,19 @@
 {
   "runOn": [
     {
-      "minServerVersion": "4.0",
-      "topology": [
-        "replicaset"
-      ]
-    },
-    {
-      "minServerVersion": "4.2",
-      "topology": [
-        "sharded"
-      ]
+      "minServerVersion": "4.4"
     }
   ],
   "database_name": "sdam-tests",
-  "collection_name": "cancel-server-check",
+  "collection_name": "commandErrorDoesNotCancelServerCheck",
   "data": [],
   "tests": [
     {
-      "description": "Cancel server check",
+      "description": "Command error does not cancel server check",
       "clientOptions": {
-        "retryWrites": true,
-        "heartbeatFrequencyMS": 10000,
-        "serverSelectionTimeoutMS": 5000,
+        "retryWrites": false,
+        "heartbeatFrequencyMS": 2000,
+        "serverSelectionTimeoutMS": 1000,
         "appname": "cancelServerCheckTest"
       },
       "operations": [
@@ -48,7 +39,8 @@
                 "failCommands": [
                   "insert"
                 ],
-                "closeConnection": true
+                "closeConnection": false,
+                "errorCode": 91
               }
             }
           }
@@ -62,8 +54,18 @@
             }
           },
           "result": {
-            "insertedId": 2
+            "errorCodeName": "ShutdownInProgress"
           }
+        },
+        {
+          "name": "insertOne",
+          "object": "collection",
+          "arguments": {
+            "document": {
+              "_id": 3
+            }
+          },
+          "error": true
         },
         {
           "name": "waitForEvent",
@@ -86,11 +88,11 @@
           "object": "collection",
           "arguments": {
             "document": {
-              "_id": 3
+              "_id": 4
             }
           },
           "result": {
-            "insertedId": 3
+            "insertedId": 4
           }
         },
         {
@@ -114,7 +116,7 @@
         {
           "command_started_event": {
             "command": {
-              "insert": "cancel-server-check",
+              "insert": "commandErrorDoesNotCancelServerCheck",
               "documents": [
                 {
                   "_id": 1
@@ -128,7 +130,7 @@
         {
           "command_started_event": {
             "command": {
-              "insert": "cancel-server-check",
+              "insert": "commandErrorDoesNotCancelServerCheck",
               "documents": [
                 {
                   "_id": 2
@@ -142,24 +144,10 @@
         {
           "command_started_event": {
             "command": {
-              "insert": "cancel-server-check",
+              "insert": "commandErrorDoesNotCancelServerCheck",
               "documents": [
                 {
-                  "_id": 2
-                }
-              ]
-            },
-            "command_name": "insert",
-            "database_name": "sdam-tests"
-          }
-        },
-        {
-          "command_started_event": {
-            "command": {
-              "insert": "cancel-server-check",
-              "documents": [
-                {
-                  "_id": 3
+                  "_id": 4
                 }
               ]
             },
@@ -175,10 +163,7 @@
               "_id": 1
             },
             {
-              "_id": 2
-            },
-            {
-              "_id": 3
+              "_id": 4
             }
           ]
         }

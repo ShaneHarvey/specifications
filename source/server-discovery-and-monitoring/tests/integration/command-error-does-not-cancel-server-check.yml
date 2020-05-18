@@ -1,27 +1,23 @@
 # Test SDAM error handling.
 runOn:
-  # General failCommand requirements (this file does not use appName
-  # with failCommand).
-  - minServerVersion: "4.0"
-    topology: ["replicaset"]
-  - minServerVersion: "4.2"
-    topology: ["sharded"]
+  # Require 4.4 for streaming
+  - minServerVersion: "4.4"
 
 database_name: &database_name "sdam-tests"
-collection_name: &collection_name "cancel-server-check"
+collection_name: &collection_name "commandErrorDoesNotCancelServerCheck"
 
 data: []
 
 tests:
-  - description: Cancel server check
+  - description: Command error does not cancel server check
     clientOptions:
-      retryWrites: true
-      heartbeatFrequencyMS: 10000
+      retryWrites: false
+      heartbeatFrequencyMS: 2000
       # Server selection timeout MUST be less than heartbeatFrequencyMS for
       # this test. This setting ensures that the retried insert will fail
-      # after 5 seconds if the driver does not properly cancel the in progress
+      # after 1 second if the driver does not properly cancel the in progress
       # check.
-      serverSelectionTimeoutMS: 5000
+      serverSelectionTimeoutMS: 1000
       appname: cancelServerCheckTest
     operations:
       # Perform an operation to ensure the node is discovered.
@@ -30,16 +26,8 @@ tests:
         arguments:
           document:
             _id: 1
-      # Configure the next inserts to fail with a non-timeout network error.
-      # This should:
-      # 1) Mark the server Unknown
-      # 2) Clear the connection pool
-      # 3) Cancel the in progress isMaster check and close the Monitor
-      #    connection
-      # 4) The write will be then we retried, server selection will request an
-      #    immediate check, and block for ~500ms until the next Monitor check
-      #    proceeds.
-      # 5) The write will succeed on the second attempt.
+      # Configure the next inserts to fail with a command error that marks the
+      # server unknown but not cancel the in progress isMaster check.
       - name: configureFailPoint
         object: testRunner
         arguments:
@@ -48,14 +36,21 @@ tests:
             mode: { times: 1 }
             data:
                 failCommands: ["insert"]
-                closeConnection: True
+                closeConnection: false
+                errorCode: 91
       - name: insertOne
         object: collection
         arguments:
           document:
             _id: 2
         result:
-          insertedId: 2
+          errorCodeName: ShutdownInProgress
+      - name: insertOne
+        object: collection
+        arguments:
+          document:
+            _id: 3
+        error: true  # Server selection timeout.
       # The first error should mark the server Unknown and then clear the pool.
       - name: waitForEvent
         object: testRunner
@@ -72,9 +67,9 @@ tests:
         object: collection
         arguments:
           document:
-            _id: 3
+            _id: 4
         result:
-          insertedId: 3
+          insertedId: 4
       # Assert the server was marked Unknown and pool was cleared exactly once.
       - name: assertEventCount
         object: testRunner
@@ -106,14 +101,7 @@ tests:
           command:
             insert: *collection_name
             documents:
-              - _id: 2
-          command_name: insert
-          database_name: *database_name
-      - command_started_event:
-          command:
-            insert: *collection_name
-            documents:
-              - _id: 3
+              - _id: 4
           command_name: insert
           database_name: *database_name
 
@@ -121,5 +109,4 @@ tests:
       collection:
         data:
           - {_id: 1}
-          - {_id: 2}
-          - {_id: 3}
+          - {_id: 4}
