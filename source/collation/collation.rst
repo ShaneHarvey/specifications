@@ -77,7 +77,7 @@ Collation Document Model
 ------------------------
 
 For naming and deviation guidance, see the `CRUD specification
-<https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#naming>`_.
+</source/crud/crud.rst#naming>`_.
 Defined below are the constructs for drivers. Note that the only required
 field is ``locale``, but the driver should let the server validate the presence
 of this field.
@@ -168,13 +168,13 @@ CRUD-related commands that take a collation option are:
 
 The collation option is sent to the server in the form of a BSON Document.
 See the `CRUD specification
-<https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#naming>`_
+</source/crud/crud.rst#naming>`_
 for details on supporting the option in the CRUD API.
 
 Driver helpers manipulating or using indexes MUST support a collation option.
 These include creating, deleting, and hinting an index. See the
 `Index Management specification
-<https://github.com/mongodb/specifications/blob/master/source/index-management.rst>`_
+</source/index-management.rst>`_
 for details.
 
 ------------------------

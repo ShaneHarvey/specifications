@@ -49,7 +49,7 @@ Read Concern
 ------------
 
 For naming and deviation guidance, see the `CRUD specification
-<https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#naming>`__.
+</source/crud/crud.rst#naming>`__.
 Defined below are the constructs for drivers.
 
 .. code:: typescript
@@ -287,7 +287,7 @@ of the write concern document MUST be as follows:
 When a driver provides a way for the application to specify the write concern,
 the following data structure SHOULD be used. For acceptable naming and
 deviation guidance, see the `CRUD specification
-<https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#naming>`__.
+</source/crud/crud.rst#naming>`__.
 
 .. code:: typescript
 

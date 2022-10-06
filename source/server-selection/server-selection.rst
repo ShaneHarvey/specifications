@@ -301,7 +301,7 @@ The serverSelectionTryOnce option MUST be true by default.
 If it is set false, then the driver repeatedly searches for an appropriate server
 until the selection process times out
 (pausing `minHeartbeatFrequencyMS
-<https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#minheartbeatfrequencyms>`_
+</source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#minheartbeatfrequencyms>`_
 between attempts, as required by the `Server Discovery and Monitoring`_
 spec).
 

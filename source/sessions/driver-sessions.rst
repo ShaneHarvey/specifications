@@ -510,7 +510,7 @@ the ``logicalSessionTimeoutMinutes`` property of the ``TopologyDescription`` has
 a value or not. If it has a value the deployment supports sessions. However, in
 order for this determination to be valid, the driver MUST be connected to at least
 one server of a type that is `data-bearing
-<https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#data-bearing-server-type>`_.
+</source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#data-bearing-server-type>`_.
 Therefore, the detailed steps to determine whether sessions are supported are:
 
 1. If the ``TopologyDescription`` and connection type indicate that
@@ -547,7 +547,7 @@ to the server:
 
 * The server might have supported sessions at the time the connection was first
   opened (and reported a value for logicalSessionTimeoutMinutes in the initial
-  response to the `handshake <https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst>`_),
+  response to the `handshake </source/mongodb-handshake/handshake.rst>`_),
   but have subsequently been downgraded to not support sessions. The server does
   not close the socket in this scenario, and the driver will forever conclude that
   the server at the other end of this connection supports sessions. This scenario

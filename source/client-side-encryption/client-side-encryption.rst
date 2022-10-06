@@ -713,9 +713,9 @@ This includes options equivalent to the following URI options:
 
 See the OCSP specification for a description of the default values of
 `tlsDisableOCSPEndpointCheck
-<https://github.com/mongodb/specifications/blob/master/source/ocsp-support/ocsp-support.rst#tlsdisableocspendpointcheck>`_
+</source/ocsp-support/ocsp-support.rst#tlsdisableocspendpointcheck>`_
 and `tlsDisableCertificateRevocationCheck
-<https://github.com/mongodb/specifications/blob/master/source/ocsp-support/ocsp-support.rst#tlsdisablecertificaterevocationcheck>`_
+</source/ocsp-support/ocsp-support.rst#tlsdisablecertificaterevocationcheck>`_
 Drivers MUST NOT modify the default value of `tlsDisableOCSPEndpointCheck` and
 `tlsDisableCertificateRevocationCheck` for KMS TLS connections.
 

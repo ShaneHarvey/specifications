@@ -27,7 +27,7 @@ The keywords “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL N
 References
 ----------
 
-`Server Discovery and Monitoring <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/>`_
+`Server Discovery and Monitoring </source/server-discovery-and-monitoring/>`_
 
 Specification
 =============
@@ -1237,7 +1237,7 @@ As a URI, those have to be UTF-8 encoded and URL-escaped, e.g.:
 Speculative Authentication	
 --------------------------
 
-See the speculative authentication section in the `MongoDB Handshake spec <https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst>`_.
+See the speculative authentication section in the `MongoDB Handshake spec </source/mongodb-handshake/handshake.rst>`_.
 
 -----------------------
 Minimum iteration count

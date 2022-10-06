@@ -30,7 +30,7 @@ document are to be interpreted as described in
 Conflicting TLS options
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Per the `Connection String spec <https://github.com/mongodb/specifications/blob/master/source/connection-string/connection-string-spec.rst#repeated-keys>`__,
+Per the `Connection String spec </source/connection-string/connection-string-spec.rst#repeated-keys>`__,
 the behavior of duplicates of most URI options is undefined. However, due
 to the security implications of certain options, drivers MUST raise an
 error to the user during parsing if any of the following circumstances
@@ -104,7 +104,7 @@ implement the old and new names as aliases. All keys and values MUST be
 encoded in UTF-8. All integer options are 32-bit unless specified otherwise.
 Note that all requirements and recommendations described in the `Connection
 String spec
-<https://github.com/mongodb/specifications/blob/master/source/connection-string/connection-string-spec.rst>`_
+</source/connection-string/connection-string-spec.rst>`_
 pertaining to URI options apply here.
 
 .. _uri.options:
@@ -121,7 +121,7 @@ pertaining to URI options apply here.
 
    * - appname
      - any string that meets the criteria listed in the `handshake spec
-       <https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst#client-application-name>`_
+       </source/mongodb-handshake/handshake.rst#client-application-name>`_
      - no appname specified
      - no
      - Passed into the server in the client metadata as part of the
@@ -129,9 +129,9 @@ pertaining to URI options apply here.
 
    * - authMechanism
      - any string; valid values are defined in the `auth spec
-       <https://github.com/mongodb/specifications/blob/master/source/auth/auth.rst#supported-authentication-methods>`_
+       </source/auth/auth.rst#supported-authentication-methods>`_
      - None; default values for authentication exist for constructing authentication credentials per the
-       `auth spec <https://github.com/mongodb/specifications/blob/master/source/auth/auth.rst#supported-authentication-methods>`_,
+       `auth spec </source/auth/auth.rst#supported-authentication-methods>`_,
        but there is no default for the URI option itself.
      - no
      - The authentication mechanism method to use for connection to the
@@ -146,14 +146,14 @@ pertaining to URI options apply here.
    * - authSource
      - any string
      - None; default values for authentication exist for constructing authentication credentials per the
-       `auth spec <https://github.com/mongodb/specifications/blob/master/source/auth/auth.rst#supported-authentication-methods>`_,
+       `auth spec </source/auth/auth.rst#supported-authentication-methods>`_,
        but there is no default for the URI option itself.
      - no
      - The database that connections should authenticate against
 
    * - compressors
      - comma separated list of strings, e.g. "snappy,zlib"
-     - defined in `compression spec <https://github.com/mongodb/specifications/blob/master/source/compression/OP_COMPRESSED.rst#compressors>`_
+     - defined in `compression spec </source/compression/OP_COMPRESSED.rst#compressors>`_
      - no
      - The list of allowed compression types for wire protocol messages
        sent or received from the server
@@ -164,17 +164,17 @@ pertaining to URI options apply here.
      - no
      - Amount of time to wait for a single TCP socket connection to the
        server to be established before erroring; note that this applies to
-       `SDAM hello and legacy hello operations <https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst>`_
+       `SDAM hello and legacy hello operations </source/mongodb-handshake/handshake.rst>`_
 
    * - directConnection
      - "true" or "false"
-     - defined in `SDAM spec <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#initial-topology-type>`__
+     - defined in `SDAM spec </source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#initial-topology-type>`__
      - no
      - Whether to connect to the deployment in Single topology.
 
    * - heartbeatFrequencyMS
      - integer greater than or equal to 500
-     - defined in `SDAM spec <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#heartbeatfrequencyms>`__
+     - defined in `SDAM spec </source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#heartbeatfrequencyms>`__
      - no
      - the interval between regular server monitoring checks
 
@@ -193,7 +193,7 @@ pertaining to URI options apply here.
    * - localThresholdMS
      - non-negative integer; 0 means 0 ms (i.e. the fastest eligible server
        must be selected)
-     - defined in the `server selection spec <https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#localthresholdms>`__
+     - defined in the `server selection spec </source/server-selection/server-selection.rst#localthresholdms>`__
      - no
      - The amount of time beyond the fastest round trip time that a given
        server’s round trip time can take and still be eligible for server selection
@@ -218,7 +218,7 @@ pertaining to URI options apply here.
 
    * - maxStalenessSeconds
      - -1 (no max staleness check) or integer >= 90
-     - defined in `max staleness spec <https://github.com/mongodb/specifications/blob/master/source/max-staleness/max-staleness.rst#api>`_
+     - defined in `max staleness spec </source/max-staleness/max-staleness.rst#api>`_
      - no
      - The maximum replication lag, in wall clock time, that a secondary can suffer and still be eligible for server selection
 
@@ -253,14 +253,14 @@ pertaining to URI options apply here.
      - The password for username/password authentication to the SOCKS5 proxy server specified in ``proxyHost``.
 
    * - readConcernLevel
-     - any string (`to allow for forwards compatibility with the server <https://github.com/mongodb/specifications/blob/master/source/read-write-concern/read-write-concern.rst#unknown-levels-and-additional-options-for-string-based-readconcerns>`_)
+     - any string (`to allow for forwards compatibility with the server </source/read-write-concern/read-write-concern.rst#unknown-levels-and-additional-options-for-string-based-readconcerns>`_)
      - no read concern specified
      - no
      - Default read concern for the client
 
    * - readPreference
-     - any string; currently supported values are defined in the `server selection spec <https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#mode>`__, but must be lowercase camelCase, e.g. "primaryPreferred"
-     - defined in `server selection spec <https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#mode>`__
+     - any string; currently supported values are defined in the `server selection spec </source/server-selection/server-selection.rst#mode>`__, but must be lowercase camelCase, e.g. "primaryPreferred"
+     - defined in `server selection spec </source/server-selection/server-selection.rst#mode>`__
      - no
      - Default read preference for the client (excluding tags)
 
@@ -283,25 +283,25 @@ pertaining to URI options apply here.
 
    * - retryReads
      - "true" or "false
-     - defined in `retryable reads spec <https://github.com/mongodb/specifications/blob/master/source/retryable-reads/retryable-reads.rst#retryreads>`_
+     - defined in `retryable reads spec </source/retryable-reads/retryable-reads.rst#retryreads>`_
      - no
      - Enables retryable reads on server 3.6+
 
    * - retryWrites
      - "true" or "false
-     - defined in `retryable writes spec <https://github.com/mongodb/specifications/blob/master/source/retryable-writes/retryable-writes.rst#retrywrites>`_
+     - defined in `retryable writes spec </source/retryable-writes/retryable-writes.rst#retrywrites>`_
      - no
      - Enables retryable writes on server 3.6+
 
    * - serverSelectionTimeoutMS
      - positive integer; a driver may also accept 0 to be used for a special case, provided that it documents the meaning
-     - defined in `server selection spec <https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#serverselectiontimeoutms>`__
+     - defined in `server selection spec </source/server-selection/server-selection.rst#serverselectiontimeoutms>`__
      - no
      - A timeout in milliseconds to block for server selection before raising an error
 
    * - serverSelectionTryOnce
      - "true" or "false"
-     - defined in `server selection spec <https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#serverselectiontryonce>`__
+     - defined in `server selection spec </source/server-selection/server-selection.rst#serverselectiontryonce>`__
      - required for single-threaded drivers
      - Scan the topology only once after a server selection failure instead of repeatedly until the server selection times out
 

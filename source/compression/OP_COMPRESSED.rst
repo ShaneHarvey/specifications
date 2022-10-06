@@ -41,7 +41,7 @@ MongoDB Handshake Amendment
 ---------------------------
 
 The `MongoDB Handshake Protocol
-<https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst>`_
+</source/mongodb-handshake/handshake.rst>`_
 describes an argument passed to the handshake command, ``client``.  This specification adds
 an additional argument, ``compression``, that SHOULD be provided to the handshake command if
 a driver supports wire compression.
@@ -234,7 +234,7 @@ MUST NOT be compressed, such as authentication requests.
 Messages using the following commands MUST NOT be compressed:
 
 * hello
-* legacy hello (see `MongoDB Handshake Protocol <https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst>`_ for details)
+* legacy hello (see `MongoDB Handshake Protocol </source/mongodb-handshake/handshake.rst>`_ for details)
 * saslStart
 * saslContinue
 * getnonce

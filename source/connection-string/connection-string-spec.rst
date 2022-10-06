@@ -205,7 +205,7 @@ Any invalid Values for a given key MUST be ignored and MUST log a WARN level mes
 -------------
 Repeated Keys
 -------------
-If a key is repeated and the corresponding data type is not a List then the precedence of which key value pair will be used is undefined except where defined otherwise by the `URI options spec <https://github.com/mongodb/specifications/blob/master/source/uri-options/uri-options.rst>`_.
+If a key is repeated and the corresponding data type is not a List then the precedence of which key value pair will be used is undefined except where defined otherwise by the `URI options spec </source/uri-options/uri-options.rst>`_.
 
 Where possible, a warning SHOULD be raised to inform the user that multiple options were found for the same value.
 

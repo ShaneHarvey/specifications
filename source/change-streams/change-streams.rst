@@ -97,7 +97,7 @@ getMore command may be considered resumable errors.
 Guidance
 --------
 
-For naming and deviation guidance, see the `CRUD specification <https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#naming>`_.
+For naming and deviation guidance, see the `CRUD specification </source/crud/crud.rst#naming>`_.
 
 --------------------
 Server Specification
@@ -587,7 +587,7 @@ The driver API consists of a ``ChangeStream`` type, as well as three helper meth
 
 The helper methods must construct an aggregation command with a REQUIRED initial ``$changeStream`` stage.  A driver MUST NOT throw a custom exception if multiple ``$changeStream`` stages are present (e.g. if a user also passed ``$changeStream`` in the pipeline supplied to the helper), as the server will return an error.
 
-The helper methods MUST determine a read concern for the operation in accordance with the `Read and Write Concern specification <https://github.com/mongodb/specifications/blob/master/source/read-write-concern/read-write-concern.rst#via-code>`_.  The initial implementation of change streams on the server requires a “majority” read concern or no read concern.  Drivers MUST document this requirement.  Drivers SHALL NOT throw an exception if any other read concern is specified, but instead should depend on the server to return an error.
+The helper methods MUST determine a read concern for the operation in accordance with the `Read and Write Concern specification </source/read-write-concern/read-write-concern.rst#via-code>`_.  The initial implementation of change streams on the server requires a “majority” read concern or no read concern.  Drivers MUST document this requirement.  Drivers SHALL NOT throw an exception if any other read concern is specified, but instead should depend on the server to return an error.
 
 The stage has the following shape:
 
@@ -595,7 +595,7 @@ The stage has the following shape:
 
   { $changeStream: ChangeStreamOptions }
 
-The first parameter of the helpers specifies an array of aggregation pipeline stages which MUST be appended to the initial stage. Drivers MUST support an empty pipeline. Languages which support default parameters MAY specify an empty array as the default value for this parameter. Drivers SHOULD otherwise make specification of a pipeline as similar as possible to the `aggregate <https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#read>`_ CRUD method.
+The first parameter of the helpers specifies an array of aggregation pipeline stages which MUST be appended to the initial stage. Drivers MUST support an empty pipeline. Languages which support default parameters MAY specify an empty array as the default value for this parameter. Drivers SHOULD otherwise make specification of a pipeline as similar as possible to the `aggregate </source/crud/crud.rst#read>`_ CRUD method.
 
 Additionally, implementors MAY provide a form of these methods which require no parameters, assuming no options and no additional stages beyond the initial ``$changeStream`` stage:
 
@@ -619,7 +619,7 @@ is projected out, but a user should otherwise be able to modify the shape of the
 to be deserialized to a ``BsonDocument`` or custom-defined type rather than a ``ChangeStreamDocument``. It is the responsiblity of the
 user to ensure that the deserialized type is compatible with the specified ``$project`` stage.
 
-The aggregate helper methods MUST have no new logic related to the ``$changeStream`` stage. Drivers MUST be capable of handling `TAILABLE_AWAIT <https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#read>`_  cursors from the aggregate command in the same way they handle such cursors from find.
+The aggregate helper methods MUST have no new logic related to the ``$changeStream`` stage. Drivers MUST be capable of handling `TAILABLE_AWAIT </source/crud/crud.rst#read>`_  cursors from the aggregate command in the same way they handle such cursors from find.
 
 ``Collection.watch`` helper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -679,7 +679,7 @@ Drivers MUST use the ``ns`` returned in the ``aggregate`` command to set the ``c
 ChangeStream
 ------------
 
-A ``ChangeStream`` is an abstraction of a `TAILABLE_AWAIT <https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#read>`_ cursor, with support for resumability.  Implementors MAY choose to implement a ``ChangeStream`` as an extension of an existing tailable cursor implementation.  If the ``ChangeStream`` is implemented as a type which owns a tailable cursor, then the implementor MUST provide a manner of closing the change stream, as well as satisfy the requirements of extending ``Iterable<Document>``. If your language has an idiomatic way of disposing of resources you MAY choose to implement that in addition to, or instead of, an explicit close method.
+A ``ChangeStream`` is an abstraction of a `TAILABLE_AWAIT </source/crud/crud.rst#read>`_ cursor, with support for resumability.  Implementors MAY choose to implement a ``ChangeStream`` as an extension of an existing tailable cursor implementation.  If the ``ChangeStream`` is implemented as a type which owns a tailable cursor, then the implementor MUST provide a manner of closing the change stream, as well as satisfy the requirements of extending ``Iterable<Document>``. If your language has an idiomatic way of disposing of resources you MAY choose to implement that in addition to, or instead of, an explicit close method.
 
 A change stream MUST track the last resume token, per `Updating the Cached Resume Token`_.
 
@@ -687,7 +687,7 @@ Drivers MUST raise an error on the first document received without a resume toke
 
 A change stream MUST attempt to resume a single time if it encounters any resumable error per `Resumable Error`_.  A change stream MUST NOT attempt to resume on any other type of error.
 
-In addition to tracking a resume token, change streams MUST also track the read preference specified when the change stream was created. In the event of a resumable error, a change stream MUST perform server selection with the original read preference using the `rules for server selection <https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#rules-for-server-selection>`_ before attempting to resume.
+In addition to tracking a resume token, change streams MUST also track the read preference specified when the change stream was created. In the event of a resumable error, a change stream MUST perform server selection with the original read preference using the `rules for server selection </source/server-selection/server-selection.rst#rules-for-server-selection>`_ before attempting to resume.
 
 Single Server Topologies
 ^^^^^^^^^^^^^^^^^^^^^^^^

@@ -182,7 +182,7 @@ A server is judged "suitable" for an operation if the client can use it
 for a particular operation.
 For example, a write requires a standalone, primary, or mongos.
 Suitability is fully specified in the `Server Selection Spec
-<https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst>`_.
+</source/server-selection/server-selection.rst>`_.
 
 address
 ```````
@@ -334,7 +334,7 @@ Fields:
 * opTime: an opTime or null.
   An opaque value representing the position in the oplog of the most recently seen write. Default null.
   (Only mongos and shard servers record this field when monitoring
-  config servers as replica sets, at least until `drivers allow applications to use readConcern "afterOptime". <https://github.com/mongodb/specifications/blob/master/source/max-staleness/max-staleness.rst#future-feature-to-support-readconcern-afteroptime>`_)
+  config servers as replica sets, at least until `drivers allow applications to use readConcern "afterOptime". </source/max-staleness/max-staleness.rst#future-feature-to-support-readconcern-afteroptime>`_)
 * (=) type: a `ServerType`_ enum value. Default Unknown.
 * (=) minWireVersion, maxWireVersion:
   the wire protocol version range supported by the server.
@@ -504,7 +504,7 @@ Client construction
 '''''''''''''''''''
 
 Except for `initial DNS seed list discovery
-<https://github.com/mongodb/specifications/blob/master/source/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.rst>`_
+</source/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.rst>`_
 when given a connection string with ``mongodb+srv`` scheme,
 the client's constructor MUST NOT do any I/O.
 This means that the constructor does not throw an exception
@@ -1248,9 +1248,9 @@ Connection Pool Management
 
 For drivers that support connection pools, after a server check is
 completed successfully, if the server is determined to be
-`data-bearing <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#data-bearing-server-type>`_
+`data-bearing </source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#data-bearing-server-type>`_
 or a
-`direct connection <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#general-requirements>`__
+`direct connection </source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#general-requirements>`__
 to the server is requested,
 and does not already have a connection pool, the driver MUST create
 the connection pool for the server. Additionally, if a driver
@@ -1667,7 +1667,7 @@ are prone to several classes of race, for example:
 * Authentication fails, the server requires SCRAM-SHA-1.
 
 Better to call hello or legacy hello for each new socket, as required by the `Auth Spec
-<https://github.com/mongodb/specifications/blob/master/source/auth/auth.rst>`_,
+</source/auth/auth.rst>`_,
 and use the hello or legacy hello response associated with that socket
 for maxWireVersion, maxBsonObjectSize, etc.:
 all the fields required to correctly communicate with the server.

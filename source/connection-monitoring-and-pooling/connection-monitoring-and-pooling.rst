@@ -179,7 +179,7 @@ A driver-defined wrapper around a single TCP connection to an Endpoint. A `Conne
 -  **Single Owner:** A `Connection`_ MUST belong to exactly one Pool, and MUST NOT be shared across multiple pools
 -  **Single Track:** A `Connection`_ MUST limit itself to one request / response at a time. A `Connection`_ MUST NOT multiplex/pipeline requests to an Endpoint.
 -  **Monotonically Increasing ID:** A `Connection`_ MUST have an ID number associated with it. `Connection`_ IDs within a Pool MUST be assigned in order of creation, starting at 1 and increasing by 1 for each new Connection.
--  **Valid Connection:** A connection MUST NOT be checked out of the pool until it has successfully and fully completed a MongoDB Handshake and Authentication as specified in the `Handshake <https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst>`__, `OP_COMPRESSED <https://github.com/mongodb/specifications/blob/master/source/compression/OP_COMPRESSED.rst>`__, and `Authentication <https://github.com/mongodb/specifications/blob/master/source/auth/auth.rst>`__ specifications.
+-  **Valid Connection:** A connection MUST NOT be checked out of the pool until it has successfully and fully completed a MongoDB Handshake and Authentication as specified in the `Handshake </source/mongodb-handshake/handshake.rst>`__, `OP_COMPRESSED </source/compression/OP_COMPRESSED.rst>`__, and `Authentication </source/auth/auth.rst>`__ specifications.
 -  **Perishable**: it is possible for a `Connection`_ to become **Perished**. A `Connection`_ is considered perished if any of the following are true:
 
    -  **Stale:** The `Connection`_ 's generation does not match the generation of the parent pool
@@ -377,7 +377,7 @@ This specification does not define how a pool is to be created, leaving it
 up to the driver. Creation of a connection pool is generally an implementation
 detail of the driver, i.e., is not a part of the public API of the driver.
 The SDAM specification defines `when
-<https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#connection-pool-creation>`_
+</source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#connection-pool-creation>`_
 the driver should create connection pools.
 
 When a pool is created, its state MUST initially be set to "paused". Even if

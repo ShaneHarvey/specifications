@@ -39,7 +39,7 @@ Terms
 
 ``Server``
 
-  The term ``Server`` refers to the implementation in the driver’s language of either an abstraction of a connection to a single mongod or mongos process, as defined by the `SDAM specification <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#server>`_.
+  The term ``Server`` refers to the implementation in the driver’s language of either an abstraction of a connection to a single mongod or mongos process, as defined by the `SDAM specification </source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#server>`_.
 
 -------------
 Specification
