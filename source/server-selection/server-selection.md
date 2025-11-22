@@ -708,9 +708,9 @@ For multi-threaded clients, the server selection algorithm is as follows:
     ["Server selection started" message](#server-selection-started-message).
 2. If the topology wire version is invalid, raise an error and log a
     ["Server selection failed" message](#server-selection-failed-message).
-3. Find suitable servers by topology type and operation type. If a list of deprioritized servers is provided, and the
-    topology is a sharded cluster, these servers should be selected only if there are no other suitable servers. The
-    server selection algorithm MUST ignore the deprioritized servers if the topology is not a sharded cluster.
+3. Find suitable servers by topology type and operation type. If a list of deprioritized servers is provided, these
+    servers should be selected only if there are no other suitable servers. The server selection algorithm MUST
+    support deprioritized servers on all topology types.
 4. Filter the suitable servers by calling the optional, application-provided server selector.
 5. If there are any suitable servers, filter them according to
     [Filtering suitable servers based on the latency window](#filtering-suitable-servers-based-on-the-latency-window)
@@ -756,9 +756,9 @@ Therefore, for single-threaded clients, the server selection algorithm is as fol
         longer stale)
 5. If the topology wire version is invalid, raise an error and log a
     ["Server selection failed" message](#server-selection-failed-message).
-6. Find suitable servers by topology type and operation type. If a list of deprioritized servers is provided, and the
-    topology is a sharded cluster, these servers should be selected only if there are no other suitable servers. The
-    server selection algorithm MUST ignore the deprioritized servers if the topology is not a sharded cluster.
+6. Find suitable servers by topology type and operation type. If a list of deprioritized servers is provided, these
+    servers should be selected only if there are no other suitable servers. The server selection algorithm MUST
+    support deprioritized servers on all topology types.
 7. Filter the suitable servers by calling the optional, application-provided server selector.
 8. If there are any suitable servers, filter them according to
     [Filtering suitable servers based on the latency window](#filtering-suitable-servers-based-on-the-latency-window)
@@ -1685,6 +1685,8 @@ maxStalenessSeconds first, then tag_sets, and select Node 2.
 - 2024-02-07: Migrated from reStructuredText to Markdown.
 
 - 2025-02-25: Note the deprecation of hedged reads.
+
+- 2025-11-21: Add list of deprioritized servers for all topology types to support client backpressure.
 
 [^1]: mongos 3.4 refuses to connect to mongods with maxWireVersion < 5, so it does no additional wire version checks
     related to maxStalenessSeconds.
